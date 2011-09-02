@@ -22,16 +22,24 @@ namespace Airplane
 
         public void addObject(DenseGameObject obj)
         {
+            if (obj == null)
+                throw new Exception("Null object.");
             List.Add(obj);
         }
 
-        public void addObject(DenseGameObject[] objs)
+        public void addObjects(DenseGameObject[] objs)
         {
-            foreach(DenseGameObject obj in objs)
+            if(objs == null)
+                throw new Exception("Null array.");
+            foreach (DenseGameObject obj in objs)
+            {
+                if (obj == null)
+                    throw new Exception("Null object.");
                 List.Add(obj);
+            }
         }
 
-        public void CheckCollisions()
+        public void checkCollisions()
         {
             //check each with each objects not more than one time
             for (int i = 0; i < List.Count-1; i++)
@@ -41,6 +49,11 @@ namespace Airplane
                     checkCollisionBetween((DenseGameObject)List[i], (DenseGameObject)List[j]); //? is it good to perform this conversion
                 }
             }
+        }
+
+        public void deleteObject(DenseGameObject obj)
+        {
+            List.Remove(obj);
         }
 
         /// <summary>

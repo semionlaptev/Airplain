@@ -73,6 +73,33 @@
       <Output>C:\game\dev\Airplane\Airplane\Airplane\bin\x86\Debug\Content\images\stars.xnb</Output>
       <Time>2011-09-01T23:49:10.3399388+04:00</Time>
     </Item>
+    <Item>
+      <Source>images\cloud2.png</Source>
+      <Name>images\cloud2</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\game\dev\Airplane\Airplane\Airplane\bin\x86\Debug\Content\images\cloud2.xnb</Output>
+      <Time>2011-09-02T13:23:22.8068793+04:00</Time>
+    </Item>
+    <Item>
+      <Source>images\stars2.png</Source>
+      <Name>images\stars2</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\game\dev\Airplane\Airplane\Airplane\bin\x86\Debug\Content\images\stars2.xnb</Output>
+      <Time>2011-09-02T13:49:02.2759319+04:00</Time>
+    </Item>
+    <Item>
+      <Source>images\cloud3.png</Source>
+      <Name>images\cloud3</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\game\dev\Airplane\Airplane\Airplane\bin\x86\Debug\Content\images\cloud3.xnb</Output>
+      <Time>2011-09-02T15:12:42.4730708+04:00</Time>
+    </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>
       <TargetPlatform>Windows</TargetPlatform>

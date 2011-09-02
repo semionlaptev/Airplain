@@ -30,7 +30,7 @@ namespace Airplane
         public Rectangle CollisionRect { set; get; }
         public CollisionEventDelegate CollisionEvent { get; set; }
 
-        DenseGameObject() : base()
+        public DenseGameObject() : base()
         {
 
         }
@@ -60,13 +60,14 @@ namespace Airplane
 
         protected new void Initialize() 
         {
+            if (Size == null)
+                throw new Exception("Null size.");
             // By default collision rectangle is the same as sprite region
             CollisionRect = new Rectangle(0, 0, (int)base.Size.X, (int)base.Size.Y);
         }
 
         public void Collided(DenseGameObject collObject)
         {
-            
             Console.WriteLine("Collision detected");
         }
     }

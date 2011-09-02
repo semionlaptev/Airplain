@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections;
 using System.Linq;
 using System.Text;
 
@@ -14,72 +13,59 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Airplane
 {
-    public delegate void AreaTriggerDelegate(GameObject obj);
-
-    /// <summary>
-    /// Sensitive area, that reacts, when specified objects get inside or out. Doesn't work as it should work now;
-    /// </summary>
-    public class TriggerArea: System.Collections.DictionaryBase
+    public class TriggerArea : DenseGameObject, ICollider
     {
-        public Rectangle AreaRectangle { set; get; }
-        public AreaTriggerDelegate OnObjectLeft { set; get; }
-        public AreaTriggerDelegate OnObjectCame { set; get; }
+        Collider triggerCollider_ = new Collider();
 
-        enum ObjectState { OUT, IN, MID }
-
-        public TriggerArea()
+        TriggerArea()
+            : base()
         {
-            AreaRectangle = new Rectangle(0, 0, 0, 0);
+
+        }
+        public TriggerArea(Vector2 position)
+            : base(position)
+        {
+            Initialize();
         }
 
         public TriggerArea(Rectangle rect)
+            : base(rect)
         {
-            AreaRectangle = rect;
+            Initialize();
         }
 
-        public void addObject(GameObject obj)
+        public TriggerArea(Vector2 position, Texture2D texture)
+            : base(position, texture)
         {
-            Dictionary.Add(obj, isObjectInsideArea(obj));
-        }
-        public void addObjects(GameObject[] objs)
-        {
-            foreach(GameObject obj in objs)
-                Dictionary.Add(obj, isObjectInsideArea(obj));
+            Initialize();
         }
 
-        public void checkAreaObjects()
+        public TriggerArea(Rectangle rect, Texture2D texture)
+            : base(rect, texture)
         {
-            foreach (DictionaryEntry entry in Dictionary)
-            {
-                bool isInside = isObjectInsideArea((GameObject)entry.Key);
-                if (isInside != (bool)entry.Value)
-                {
-                    if (isInside == true)
-                    {
-                        if (OnObjectCame != (AreaTriggerDelegate)null)
-                            OnObjectCame((GameObject)entry.Key);
-                    }
-                    else
-                    {
-                        if (OnObjectLeft != (AreaTriggerDelegate)null)
-                            OnObjectLeft((GameObject)entry.Key);
-                    }
-
-                }
-            }
+            Initialize();
         }
 
-        protected bool isObjectInsideArea(GameObject obj)
+        public void addObject (DenseGameObject obj)
         {
-            if (obj.Position.X > AreaRectangle.X && obj.Position.Y > AreaRectangle.Y &&
-                (obj.Position.X + obj.Size.X) < AreaRectangle.X + AreaRectangle.Width &&
-                (obj.Position.Y + obj.Size.Y) < AreaRectangle.Y + AreaRectangle.Height)
-            {
-                return true;
-            }
-
-            return false;
+             triggerCollider_.addObject(obj);
         }
 
+        public void addObjects(DenseGameObject[] objs)
+        {
+            triggerCollider_.addObjects(objs);
+        }
+
+        public void deleteObject(DenseGameObject obj)
+        {
+            triggerCollider_.deleteObject(obj);
+        }
+
+        public void checkCollisions()
+        {
+            triggerCollider_.checkCollisions();
+        }
+    
     }
+
 }

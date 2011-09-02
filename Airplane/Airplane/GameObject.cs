@@ -43,17 +43,14 @@ namespace Airplane
 
         Vector2 size_;
 
-        //GameObject events
-        /*public ObjectEventVoidDelegate onScreenLeftLeft{ get; set; }
-        public ObjectEventVoidDelegate onScreenLeftRight { get; set; }
-        public ObjectEventVoidDelegate onScreenLeftTop { get; set; }
-        public ObjectEventVoidDelegate onScreenLeftBottom { get; set; }*/
-
         public Vector2 Size { 
             get
             {
                 if (size_ == Vector2.Zero)
-                    return new Vector2(Image.Width, Image.Height);
+                    if(Image != null)
+                        return new Vector2(Image.Width, Image.Height);
+                    else
+                        return Vector2.Zero;
                 else
                     return size_;
             }
@@ -77,6 +74,10 @@ namespace Airplane
         public GameObject(Rectangle rect)
         {
             Initialize();
+            
+            if (rect == null)
+                throw new Exception("Null rectangle.");
+
             Position = new Vector2(rect.X,rect.Y);
             Size = new Vector2(rect.Width, rect.Height);
         }
@@ -91,6 +92,10 @@ namespace Airplane
         public GameObject(Rectangle rect, Texture2D texture)
         {
             Initialize();
+
+            if (rect == null)
+                throw new Exception("Null rectangle.");
+
             Position = new Vector2(rect.X, rect.Y);
             Size = new Vector2(rect.Width, rect.Height);
             Image = texture;

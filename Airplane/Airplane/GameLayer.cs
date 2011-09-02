@@ -2,46 +2,85 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Collections;
+
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.GamerServices;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 
 namespace Airplane
 {
     /// <summary>
-    /// A game layer. It stores GameObjects and its layer depth to draw.
+    /// A game layer. It contains GameObjects and its layer depth to draw.
     /// </summary>
-    public class GameLayer : System.Collections.CollectionBase
+    /// TODO: Layer speed support. Proper objects scaling 
+    public class GameLayer :  IEnumerable
     {
-        public bool isVisible { set; get; }
-        public float Rotation { set; get; }
-        public Vector2 Position { set; get; }
-        public float Depth { set; get; }
-        public float Scale { set; get; }
-        public Vector2 Speed { set; get; }
+        List<GameObject> objectlist_ = new List<GameObject>();
 
-        public GameLayer()
+        public float Depth { set; get; }
+        
+        public GameLayer():
+            base()
+        {
+            Initialize();
+        }
+        
+         public GameLayer(Vector2 position)
+        {
+            Initialize();
+        }
+
+        public GameLayer(Rectangle rect)
+        {
+            Initialize();
+        }
+
+        public GameLayer(Vector2 position, Texture2D texture)
+        {
+            Initialize();
+        }
+
+        public GameLayer(Rectangle rect, Texture2D texture)
         {
             Initialize();
         }
 
         protected void Initialize()
         {
-            isVisible = true;
-            Rotation = 0.0f;
-            Position = new Vector2(0, 0);
             Depth = 0.0f;
-            Scale = 1.0f;
-            Speed = new Vector2(0,0);
         }
 
         public void addObject(GameObject obj)
         {
-            List.Add(obj);
+            if (obj == null)
+                throw new Exception("Null object.");
+            objectlist_.Add(obj);
         }
 
         public void addObjects(GameObject[] objs)
         {
+            if (objs == null)
+                throw new Exception("Null array.");
             foreach(GameObject obj in objs)
-                List.Add(obj);
+                objectlist_.Add(obj);
         }
+
+        public void deleteObject(GameObject obj)
+        {
+            objectlist_.Remove(obj);
+        }
+
+        //implementation of IEnumerable interface
+
+        public IEnumerator GetEnumerator()
+        {
+            return objectlist_.GetEnumerator();
+        }
+
     }
 }
