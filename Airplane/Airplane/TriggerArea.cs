@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Collections;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
@@ -13,10 +14,10 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Airplane
 {
-    public class TriggerArea : DenseGameObject, ICollider
+    public class TriggerArea : DenseObject, IGameList, IEnumerable
     {
         Collider triggerCollider_ = new Collider();
-
+        //friend
         TriggerArea()
             : base()
         {
@@ -46,19 +47,30 @@ namespace Airplane
             Initialize();
         }
 
-        public void addObject (DenseGameObject obj)
+        public void addObject (GameObject obj)
         {
-             triggerCollider_.addObject(obj);
+            triggerCollider_.addObject((DenseObject)obj);
         }
 
-        public void addObjects(DenseGameObject[] objs)
+        public void addObjects(GameObject[] objs)
         {
             triggerCollider_.addObjects(objs);
         }
 
-        public void deleteObject(DenseGameObject obj)
+        public void deleteObject(GameObject obj)
         {
-            triggerCollider_.deleteObject(obj);
+            triggerCollider_.deleteObject((DenseObject)obj);
+        }
+
+        public new void Initialize()
+        {
+            base.Initialize();
+            triggerCollider_.addObject(this);
+        }
+
+        public IEnumerator GetEnumerator()
+        {
+            return triggerCollider_.GetEnumerator();
         }
 
         public void checkCollisions()

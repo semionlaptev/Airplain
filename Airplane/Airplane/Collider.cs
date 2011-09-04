@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Collections;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
@@ -13,53 +14,61 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Airplane
 {
-    class Collider : System.Collections.CollectionBase
+    public class Collider : GameObject, IGameList, IEnumerable // check this huita
     {
+        List<DenseObject> objectslist_ = new List<DenseObject>();
+
         public Collider()
         {
 
         }
 
-        public void addObject(DenseGameObject obj)
+        public void addObject(GameObject obj)
         {
             if (obj == null)
                 throw new Exception("Null object.");
-            List.Add(obj);
+            objectslist_.Add((DenseObject)obj);
         }
 
-        public void addObjects(DenseGameObject[] objs)
+        public void addObjects(GameObject[] objs)
         {
             if(objs == null)
                 throw new Exception("Null array.");
-            foreach (DenseGameObject obj in objs)
+            foreach (GameObject obj in objs)
             {
                 if (obj == null)
                     throw new Exception("Null object.");
-                List.Add(obj);
+                objectslist_.Add((DenseObject)obj);
             }
         }
 
         public void checkCollisions()
         {
             //check each with each objects not more than one time
-            for (int i = 0; i < List.Count-1; i++)
+            for (int i = 0; i < objectslist_.Count - 1; i++)
             {
-                for (int j = i + 1; j < List.Count; j++)
+                for (int j = i + 1; j < objectslist_.Count; j++)
                 {
-                    checkCollisionBetween((DenseGameObject)List[i], (DenseGameObject)List[j]); //? is it good to perform this conversion
+                    checkCollisionBetween((DenseObject)objectslist_[i], (DenseObject)objectslist_[j]); //? is it good to perform this conversion
                 }
             }
         }
 
-        public void deleteObject(DenseGameObject obj)
+        public void deleteObject(GameObject obj)
         {
-            List.Remove(obj);
+            objectslist_.Remove((DenseObject)obj);
         }
+
+        public IEnumerator GetEnumerator()
+        {
+            return objectslist_.GetEnumerator();
+        }
+
 
         /// <summary>
         /// Check if object1 and object2 intersect each other by its collision rectangles. If true calls its CollisionEvent if defined.
         /// </summary>
-        protected void checkCollisionBetween(DenseGameObject obj1, DenseGameObject obj2)
+        protected void checkCollisionBetween(DenseObject obj1, DenseObject obj2)
         {
             //Warning! Width and Height params are coordinates of the right top rectangle corner, not width and height of the rectangle
             //the scale may cause troubles in future

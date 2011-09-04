@@ -18,9 +18,9 @@ namespace Airplane
     /// A game layer. It contains GameObjects and its layer depth to draw.
     /// </summary>
     /// TODO: Layer speed support. Proper objects scaling 
-    public class GameLayer :  IEnumerable
+    public class GameLayer :  PositionedObject, IGameList, IEnumerable
     {
-        List<GameObject> objectlist_ = new List<GameObject>();
+        List<PositionedObject> objectlist_ = new List<PositionedObject>();
 
         public float Depth { set; get; }
         
@@ -50,16 +50,17 @@ namespace Airplane
             Initialize();
         }
 
-        protected void Initialize()
+        protected new void Initialize()
         {
             Depth = 0.0f;
+            //Speed = new Vector2(0, 0);
         }
 
         public void addObject(GameObject obj)
         {
             if (obj == null)
                 throw new Exception("Null object.");
-            objectlist_.Add(obj);
+            objectlist_.Add((PositionedObject)obj);
         }
 
         public void addObjects(GameObject[] objs)
@@ -67,12 +68,12 @@ namespace Airplane
             if (objs == null)
                 throw new Exception("Null array.");
             foreach(GameObject obj in objs)
-                objectlist_.Add(obj);
+                objectlist_.Add((PositionedObject)obj);
         }
 
         public void deleteObject(GameObject obj)
         {
-            objectlist_.Remove(obj);
+            objectlist_.Remove((PositionedObject)obj);
         }
 
         //implementation of IEnumerable interface

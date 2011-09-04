@@ -13,7 +13,7 @@
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <XnaFrameworkVersion>v4.0</XnaFrameworkVersion>
     <XnaPlatform>Windows</XnaPlatform>
-    <XnaProfile>HiDef</XnaProfile>
+    <XnaProfile>Reach</XnaProfile>
     <XnaCrossPlatformGroupID>400b7c08-6b88-43c6-b9dc-a92930ec912c</XnaCrossPlatformGroupID>
     <XnaOutputType>Game</XnaOutputType>
     <ApplicationIcon>Misc\Game.ico</ApplicationIcon>
@@ -110,11 +110,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ICollider.cs" />
-    <Compile Include="TriggerArea.cs" />
-    <Compile Include="DenseGameObject.cs" />
-    <Compile Include="GameLayer.cs" />
     <Compile Include="GameObject.cs" />
+    <Compile Include="IGameList.cs" />
+    <Compile Include="ObjectHandler.cs" />
+    <Compile Include="RealObject.cs" />
+    <Compile Include="TriggerArea.cs" />
+    <Compile Include="DenseObject.cs" />
+    <Compile Include="GameLayer.cs" />
+    <Compile Include="PositionedObject.cs" />
     <Compile Include="Collider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
