@@ -13,46 +13,53 @@ using Microsoft.Xna.Framework.Media;
 
 using System.Diagnostics;
 
-
-
 namespace Airplane
 {
 
-    public delegate void CollisionEventDelegate(DenseGameObject obj1, DenseGameObject obj2);
+    public delegate void CollisionEventDelegate(DenseObject obj1, DenseObject obj2);
 
     /// <summary>
     /// An object that can interact with other "dense" objects. 
     /// </summary>
     /// <param name="CollisionRect">Rectangle that sets "sensitive" region. Is relative to the object position.</param>
     /// <param name="CollisionEvent">Delegate method that will be called if collision happenes</param>
-    public class DenseGameObject : GameObject
+    public class DenseObject : RealObject
     {
         public Rectangle CollisionRect { set; get; }
         public CollisionEventDelegate CollisionEvent { get; set; }
 
-        public DenseGameObject() : base()
+        public Vector2 SizeScaled
+        {
+            private set { }
+            get
+            {
+                return Size * Scale;
+            }
+        }
+
+        public DenseObject() : base()
         {
 
         }
-        public DenseGameObject(Vector2 position)
+        public DenseObject(Vector2 position)
             : base(position)
         {
             Initialize();
         }
 
-        public DenseGameObject(Rectangle rect)
+        public DenseObject(Rectangle rect)
             : base(rect)
         {
             Initialize();
         }
 
-        public DenseGameObject(Vector2 position, Texture2D texture)
+        public DenseObject(Vector2 position, Texture2D texture)
             : base(position, texture)
         {
             Initialize();
         }
 
-        public DenseGameObject(Rectangle rect, Texture2D texture)
+        public DenseObject(Rectangle rect, Texture2D texture)
             : base(rect, texture)
         {
             Initialize();
@@ -64,11 +71,7 @@ namespace Airplane
                 throw new Exception("Null size.");
             // By default collision rectangle is the same as sprite region
             CollisionRect = new Rectangle(0, 0, (int)base.Size.X, (int)base.Size.Y);
-        }
-
-        public void Collided(DenseGameObject collObject)
-        {
-            Console.WriteLine("Collision detected");
+            CollisionEvent = null;
         }
     }
 }
