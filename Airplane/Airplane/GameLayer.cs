@@ -18,41 +18,29 @@ namespace Airplane
     /// A game layer. It contains GameObjects and its layer depth to draw.
     /// </summary>
     /// TODO: Layer speed support. Proper objects scaling 
-    public class GameLayer :  PositionedObject, IGameList, IEnumerable
+    public class GameLayer : PositionedObject, IGameList, IEnumerable
     {
         List<PositionedObject> objectlist_ = new List<PositionedObject>();
 
         public float Depth { set; get; }
-        
-        public GameLayer():
-            base()
+
+        public GameLayer(float depth)
+            : base()
         {
             Initialize();
+            Depth = depth;
         }
-        
-         public GameLayer(Vector2 position)
+        public GameLayer(Vector2 position, float depth)
+            : base(position)
         {
             Initialize();
+            Depth = depth;
         }
 
-        public GameLayer(Rectangle rect)
-        {
-            Initialize();
-        }
-
-        public GameLayer(Vector2 position, Texture2D texture)
-        {
-            Initialize();
-        }
-
-        public GameLayer(Rectangle rect, Texture2D texture)
-        {
-            Initialize();
-        }
 
         protected new void Initialize()
         {
-            Depth = 0.0f;
+            Depth = 0;
             //Speed = new Vector2(0, 0);
         }
 
@@ -67,7 +55,7 @@ namespace Airplane
         {
             if (objs == null)
                 throw new Exception("Null array.");
-            foreach(GameObject obj in objs)
+            foreach (GameObject obj in objs)
                 objectlist_.Add((PositionedObject)obj);
         }
 
@@ -81,6 +69,24 @@ namespace Airplane
         public IEnumerator GetEnumerator()
         {
             return objectlist_.GetEnumerator();
+        }
+
+        public override void Move(Vector2 parent_speed)
+        {
+            //base.Move(parent_speed);
+            foreach (PositionedObject obj in objectlist_)
+            {
+                obj.Move(this.Speed+parent_speed);
+            }
+        }
+
+        public override void Move()
+        {
+            //base.Move();
+            foreach(PositionedObject obj in objectlist_)
+            {
+                obj.Move(this.Speed);
+            }
         }
 
     }

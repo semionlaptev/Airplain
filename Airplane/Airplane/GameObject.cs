@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Airplane
 {
-    public class GameObject
+    public abstract class GameObject
     {
         public string Tag { get; set; }
     }

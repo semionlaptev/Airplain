@@ -2,6 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+
+//using mat
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
@@ -22,7 +25,7 @@ namespace Airplane
 
         int screenWidth, screenHeight;
 
-        const int houserate = 9;
+        int houserate = 9;
         //layers
         //List that will store game object layers. Each layer has a string name
         Dictionary<string, GameLayer> Layers = new Dictionary<string, GameLayer>();
@@ -125,22 +128,22 @@ namespace Airplane
         protected void InitializeLayers()
         {
             //layers init
-            Layers.Add("plane", new GameLayer());
-            Layers.Add("sky", new GameLayer());
-            Layers.Add("farcity", new GameLayer());
-            Layers.Add("stars", new GameLayer());
-            Layers.Add("clouds1", new GameLayer());
-            Layers.Add("clouds2", new GameLayer());
-            Layers.Add("clouds3", new GameLayer());
-
-            //set the draw depth for the game layers
-            Layers["plane"].Depth = 0.8f;
-            Layers["farcity"].Depth = 0.5f;
-            Layers["sky"].Depth = 0.0f;
-            Layers["stars"].Depth = 0.1f;
-            Layers["clouds1"].Depth = 0.55f;
-            Layers["clouds2"].Depth = 0.85f;
-            Layers["clouds3"].Depth = 0.9f;
+            Layers.Add("plane", new GameLayer(0.8f));
+            Layers.Add("sky", new GameLayer(0.0f));
+            Layers.Add("farcity", new GameLayer(0.5f));
+            Layers.Add("stars", new GameLayer(0.1f));
+            Layers.Add("clouds1", new GameLayer(0.55f));
+            Layers.Add("clouds2", new GameLayer(0.85f));
+            Layers.Add("clouds3", new GameLayer(0.9f));
+            Layers.Add("houses", new GameLayer(0.86f));
+           // //set the draw depth for the game layers
+           // Layers["plane"].Depth = 0.8f;
+           // Layers["farcity"].Depth = 0.5f;
+           // Layers["sky"].Depth = 0.0f;
+           // Layers["stars"].Depth = 0.1f;
+           // Layers["clouds1"].Depth = 0.55f;
+           // Layers["clouds2"].Depth = 0.85f;
+           // Layers["clouds3"].Depth = 0.9f;
 
             //add objects to the layers
             Layers["plane"].addObject(plane);
@@ -150,6 +153,7 @@ namespace Airplane
             Layers["farcity"].addObject(farcity);
             Layers["farcity"].addObject(farcityTwin);
 
+            Layers["houses"].Speed = new Vector2(-nspeed(90), 0);
         }
 
         protected void InitializeColliders()
@@ -193,10 +197,11 @@ namespace Airplane
             //to move objects in the world coordinates add summ of its speed and layer's speed to the object's position
             foreach (KeyValuePair<string, GameLayer> layer in Layers)
             {
-                foreach (PositionedObject gameObject in layer.Value)
-                {
-                    gameObject.Position += gameObject.Speed;
-                }
+                //foreach (PositionedObject gameObject in layer.Value)
+                //{
+                //    gameObject.Position += gameObject.Speed;
+                //}
+                layer.Value.Move();
             }
         }
         protected void CheckCollisions()
@@ -248,21 +253,41 @@ namespace Airplane
 
             if (up)
             {
-                plane.Speed = new Vector2(plane.Speed.X, -nspeed(100));
+                //plane.Speed = new Vector2(plane.Speed.X, -nspeed(100));
+                
             }
             else
             {
-                plane.Speed = new Vector2(plane.Speed.X, nspeed(50));
+                //plane.Speed = new Vector2(plane.Speed.X, nspeed(50));
+                Layers["houses"].Speed = new Vector2(-nspeed(90), 0);
+                
             }
+
+            Vector2 cityspeed = new Vector2(-nspeed(360), 0);
 
             if (sp)
             {
-                plane.Speed = new Vector2(nspeed(1000), plane.Speed.Y);
+                //plane.Speed = new Vector2(nspeed(1000), plane.Speed.Y);
+                
+                houserate = 45;
+                if (plane.Rotation > -1.5f)
+                    plane.Rotation -= 0.01f;
+                //Layers["houses"].Speed = new Vector2(-nspeed(360), 0);
+                
+                //Vector2 newspeed = new Vector2();
             }
             else
             {
-                plane.Speed = new Vector2(-nspeed(0), plane.Speed.Y);
+                //houserate = 9;
+                //plane.Speed = new Vector2(-nspeed(0), plane.Speed.Y);
+                if (plane.Rotation < 1.5f)
+                    plane.Rotation += 0.01f;
             }
+
+            plane.Speed = new Vector2(0, -(float) (cityspeed.X*Math.Sin((double) plane.Rotation)));
+            cityspeed = new Vector2((float)(cityspeed.X*Math.Cos((double)plane.Rotation)),0);
+
+            Layers["houses"].Speed = cityspeed;
 
             MoveObjects();
             CheckCollisions();
@@ -364,11 +389,11 @@ namespace Airplane
             int houseWidth = 100+random.Next(80);
             DenseObject house = new DenseObject(new Rectangle(screenWidth,screenHeight-houseHeight,houseWidth, houseHeight),houseImage);
             house.Tag = "House";
-            house.Speed = new Vector2(-nspeed(80), 0);
+            //house.Speed = new Vector2(-nspeed(80), 0);
 
             handler.addObjectToList(house, collider);
             handler.addObjectToList(house, leftScreenTrigger);
-            handler.addObjectToList(house, Layers["plane"]);
+            handler.addObjectToList(house, Layers["houses"]);
         }
 
         protected void objectSpawnCloud(Rectangle spawnRect)
