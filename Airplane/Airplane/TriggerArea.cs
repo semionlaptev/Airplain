@@ -23,11 +23,6 @@ namespace Airplane
         {
 
         }
-        public TriggerArea(Vector2 position)
-            : base(position)
-        {
-            Initialize();
-        }
 
         public TriggerArea(Rectangle rect)
             : base(rect)
@@ -35,37 +30,25 @@ namespace Airplane
             Initialize();
         }
 
-        public TriggerArea(Vector2 position, Texture2D texture)
-            : base(position, texture)
+        public void AddObject (GameObject obj)
         {
-            Initialize();
+            triggerCollider_.AddObject((DenseObject)obj);
         }
 
-        public TriggerArea(Rectangle rect, Texture2D texture)
-            : base(rect, texture)
+        public void AddObjects(GameObject[] objs)
         {
-            Initialize();
+            triggerCollider_.AddObjects(objs);
         }
 
-        public void addObject (GameObject obj)
+        public void RemoveObject(GameObject obj)
         {
-            triggerCollider_.addObject((DenseObject)obj);
-        }
-
-        public void addObjects(GameObject[] objs)
-        {
-            triggerCollider_.addObjects(objs);
-        }
-
-        public void deleteObject(GameObject obj)
-        {
-            triggerCollider_.deleteObject((DenseObject)obj);
+            triggerCollider_.RemoveObject((DenseObject)obj);
         }
 
         public new void Initialize()
         {
             base.Initialize();
-            triggerCollider_.addObject(this);
+            triggerCollider_.AddObject(this);
         }
 
         public IEnumerator GetEnumerator()

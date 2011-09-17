@@ -23,7 +23,7 @@ namespace Airplane
     /// </summary>
     /// <param name="CollisionRect">Rectangle that sets "sensitive" region. Is relative to the object position.</param>
     /// <param name="CollisionEvent">Delegate method that will be called if collision happenes</param>
-    public class DenseObject : RealObject
+    public class DenseObject : PositionedObject
     {
         public Rectangle CollisionRect { set; get; }
         public CollisionEventDelegate CollisionEvent { get; set; }
@@ -33,44 +33,32 @@ namespace Airplane
             private set { }
             get
             {
-                return Size * Scale;
+                return new Vector2(CollisionRect.Width, CollisionRect.Height) * Scale;
             }
         }
 
-        public DenseObject() : base()
+        protected DenseObject() : base()
         {
 
         }
-        public DenseObject(Vector2 position)
-            : base(position)
+
+        public DenseObject(Vector2 position, Rectangle rect) :
+            base(position)
         {
             Initialize();
+            CollisionRect = rect;
         }
 
-        public DenseObject(Rectangle rect)
-            : base(rect)
+        public DenseObject(Rectangle rect):
+            base(new Vector2(rect.X,rect.Y))
         {
             Initialize();
+            CollisionRect = new Rectangle(0, 0, rect.Width, rect.Height);         
         }
 
-        public DenseObject(Vector2 position, Texture2D texture)
-            : base(position, texture)
-        {
-            Initialize();
-        }
-
-        public DenseObject(Rectangle rect, Texture2D texture)
-            : base(rect, texture)
-        {
-            Initialize();
-        }
 
         protected new void Initialize() 
         {
-            if (Size == null)
-                throw new Exception("Null size.");
-            // By default collision rectangle is the same as sprite region
-            CollisionRect = new Rectangle(0, 0, (int)base.Size.X, (int)base.Size.Y);
             CollisionEvent = null;
         }
     }

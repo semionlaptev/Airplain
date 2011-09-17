@@ -42,36 +42,23 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="images\sky.png">
-      <Name>sky</Name>
+    <Compile Include="images\cloud3.png">
+      <Name>cloud3</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="images\city.png">
-      <Name>city</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="images\farcity.png">
-      <Name>farcity</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="images\rect3102.png">
       <Name>rect3102</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="images\CLOUD1.png">
-      <Name>CLOUD1</Name>
+    <Compile Include="images\sky.png">
+      <Name>sky</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="images\stars2.png">
+      <Name>stars2</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
@@ -84,8 +71,29 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="images\boubou.png">
-      <Name>boubou</Name>
+    <Compile Include="images\leftright.png">
+      <Name>leftright</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="images\letright2.png">
+      <Name>letright2</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="images\letright3.png">
+      <Name>letright3</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="images\letright4.png">
+      <Name>letright4</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
@@ -98,22 +106,22 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="images\cloud2.png">
-      <Name>cloud2</Name>
+    <Compile Include="fonts\TextFont.spritefont">
+      <Name>TextFont</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="images\backgroundcity.png">
+      <Name>backgroundcity</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="images\stars2.png">
-      <Name>stars2</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="images\cloud3.png">
-      <Name>cloud3</Name>
+    <Compile Include="images\smountains.png">
+      <Name>smountains</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

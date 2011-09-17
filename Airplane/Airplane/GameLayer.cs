@@ -17,7 +17,7 @@ namespace Airplane
     /// <summary>
     /// A game layer. It contains GameObjects and its layer depth to draw.
     /// </summary>
-    /// TODO: Layer speed support. Proper objects scaling 
+    /// TODO: Layer postions support. Proper objects scaling 
     public class GameLayer : PositionedObject, IGameList, IEnumerable
     {
         List<PositionedObject> objectlist_ = new List<PositionedObject>();
@@ -30,28 +30,20 @@ namespace Airplane
             Initialize();
             Depth = depth;
         }
-        public GameLayer(Vector2 position, float depth)
-            : base(position)
-        {
-            Initialize();
-            Depth = depth;
-        }
-
-
+        
         protected new void Initialize()
         {
             Depth = 0;
-            //Speed = new Vector2(0, 0);
         }
 
-        public void addObject(GameObject obj)
+        public void AddObject(GameObject obj)
         {
             if (obj == null)
                 throw new Exception("Null object.");
             objectlist_.Add((PositionedObject)obj);
         }
 
-        public void addObjects(GameObject[] objs)
+        public void AddObjects(GameObject[] objs)
         {
             if (objs == null)
                 throw new Exception("Null array.");
@@ -59,7 +51,7 @@ namespace Airplane
                 objectlist_.Add((PositionedObject)obj);
         }
 
-        public void deleteObject(GameObject obj)
+        public void RemoveObject(GameObject obj)
         {
             objectlist_.Remove((PositionedObject)obj);
         }

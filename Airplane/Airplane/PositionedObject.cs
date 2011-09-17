@@ -14,13 +14,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Airplane
 {
-    /// <summary>
-    /// An ingame object.
-    /// </summary>
-    /// <param name="Position">A 2D vector.</param>
-    /// <param name="Size">Gets or sets a 2D vector that stores width and height of an object's image. By default it is the same as the loaded image size.</param>
-    /// <param name="Image">A </param>
-    public abstract class PositionedObject: GameObject
+    public class PositionedObject: GameObject
     {
         
         public Vector2 Position {get;set;} 
@@ -28,7 +22,11 @@ namespace Airplane
         public float Rotation { set; get; }
         public Vector2 Speed { get; set; }
 
-        public PositionedObject()
+        public Vector2 Origin { get; set; }
+        //private Vector2 origin_;
+        //public Vector2 Origin { get { return new Vector2(origin_.X * Scale, origin_.Y*Scale); } set { origin_ = value; } } //TODO: test it with scale
+
+        protected PositionedObject()
         {
             Initialize();
         }
@@ -46,7 +44,7 @@ namespace Airplane
             Rotation = 0.0f;
             Position = Vector2.Zero;
             Speed = Vector2.Zero;
-            
+            Origin = Vector2.Zero;            
         }
 
         public virtual void Move()

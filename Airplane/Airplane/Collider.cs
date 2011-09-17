@@ -14,7 +14,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Airplane
 {
-    public class Collider : GameObject, IGameList, IEnumerable // check this huita
+    public class Collider : IGameList, IEnumerable // check this huita
     {
         List<DenseObject> objectslist_ = new List<DenseObject>();
 
@@ -23,14 +23,19 @@ namespace Airplane
 
         }
 
-        public void addObject(GameObject obj)
+        private void addObjectToCollider(DenseObject obj)
+        {
+            objectslist_.Add(obj);
+        }
+
+        public void AddObject(GameObject obj)
         {
             if (obj == null)
                 throw new Exception("Null object.");
-            objectslist_.Add((DenseObject)obj);
+            addObjectToCollider((DenseObject)obj);
         }
 
-        public void addObjects(GameObject[] objs)
+        public void AddObjects(GameObject[] objs)
         {
             if(objs == null)
                 throw new Exception("Null array.");
@@ -38,7 +43,7 @@ namespace Airplane
             {
                 if (obj == null)
                     throw new Exception("Null object.");
-                objectslist_.Add((DenseObject)obj);
+                addObjectToCollider((DenseObject)obj);
             }
         }
 
@@ -49,14 +54,19 @@ namespace Airplane
             {
                 for (int j = i + 1; j < objectslist_.Count; j++)
                 {
-                    checkCollisionBetween((DenseObject)objectslist_[i], (DenseObject)objectslist_[j]); //? is it good to perform this conversion
+                    checkCollisionBetween(objectslist_[i], objectslist_[j]); //? is it good to perform this conversion
                 }
             }
         }
 
-        public void deleteObject(GameObject obj)
+        private void removeObjectFromCollider (DenseObject obj)
         {
-            objectslist_.Remove((DenseObject)obj);
+            objectslist_.Remove(obj);
+        }
+
+        public void RemoveObject(GameObject obj)
+        {
+            removeObjectFromCollider((DenseObject)obj);
         }
 
         public IEnumerator GetEnumerator()

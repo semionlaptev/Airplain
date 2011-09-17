@@ -15,12 +15,8 @@ namespace Airplane
 {
     interface IGameList
     {
-        void addObject(GameObject obj);
-        void addObjects(GameObject[] objs);
-        //void checkCollisions();
-        void deleteObject(GameObject obj);
-        //void checkCollisionBetween(DenseGameObject obj1, DenseGameObject obj2);
-        //bool checkRectanglesCollision(Rectangle rect1, Rectangle rect2);
-        //bool isPointInRectangle(Vector2 point, Rectangle rect);
+        void AddObject(GameObject obj);
+        void AddObjects(GameObject[] objs);
+        void RemoveObject(GameObject obj);
     }
 }
