@@ -7,12 +7,14 @@ using Microsoft.Xna.Framework;
 
 namespace Airplane
 {
-    class AnimationHandler: IGameList
+    class AnimationHandler : IGameList
     {
 
         List<GameAnimation> objectslist_ = new List<GameAnimation>();
 
         private static AnimationHandler instance_ = null;
+        //private readonly static AnimationHandler instance_ = new AnimationHandler();
+
         private AnimationHandler() { }
         public static AnimationHandler Instance
         {
@@ -63,6 +65,11 @@ namespace Airplane
             {
                 AddAnimation((GameAnimation)obj);
             }
+        }
+
+        public double Count()
+        {
+            return objectslist_.Count();
         }
 
     }

@@ -10,6 +10,8 @@ namespace Airplane
         private ObjectHandler() {}
         private static ObjectHandler instance_ = null;
 
+        public static int Checks {set;get;}
+
         Dictionary<GameObject, List<IGameList>> objectslists_ = new Dictionary<GameObject, List<IGameList>>();
         Dictionary<GameObject, List<IGameDictionary>> objectsdicts_ = new Dictionary<GameObject, List<IGameDictionary>>();
 

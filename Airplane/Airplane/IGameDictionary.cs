@@ -9,5 +9,6 @@ namespace Airplane
     {
         void AddKeyVal(GameObject keyobj, GameObject valobj);
         void RemoveByKey(GameObject keyobj);
+        double Count();
     }
 }

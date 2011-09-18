@@ -79,10 +79,10 @@ namespace Airplane
             device = graphics.GraphicsDevice;
             graphics.IsFullScreen = false;
             graphics.PreferredBackBufferWidth = 1600;
-            graphics.PreferredBackBufferHeight = 600;
+            graphics.PreferredBackBufferHeight = 800;
             Window.Title = "Paper Plane";
             graphics.ApplyChanges();
-
+            
             screenWidth = device.PresentationParameters.BackBufferWidth;
             screenHeight = device.PresentationParameters.BackBufferHeight;
 
@@ -159,7 +159,7 @@ namespace Airplane
 
             mountains = new PositionedObject(new Vector2(0,200));
             ImageHandler.Instance.LinkObjectAndImage(mountains, new GameImage(mountainsImage));
-            mountains.Speed = new Vector2(-nspeed(20),0);
+            //mountains.Speed = new Vector2(-nspeed(20),0);
 
             InitializeLayers();
             InitializeColliders();           
@@ -197,7 +197,7 @@ namespace Airplane
             ObjectHandler.instance.AddObjectToList(plane, plain_collider);
             plane.CollisionEvent = onPlayerHit;
 
-            leftScreenTrigger = new TriggerArea(new Rectangle(-500, 0, 500, screenHeight));
+            leftScreenTrigger = new TriggerArea(new Rectangle(-500, -300, 500, screenHeight+300));
             leftScreenTrigger.CollisionEvent = onObjectInArea;
         }
 
@@ -232,8 +232,6 @@ namespace Airplane
           
             if (gameTime.ElapsedGameTime.Milliseconds > 0)
                 fps = 1000.0f / gameTime.ElapsedGameTime.Milliseconds;
-
-            //Console.WriteLine(fps);
 
             bool up = false;
             bool sp = false;
@@ -275,7 +273,7 @@ namespace Airplane
                 
             }
 
-            Vector2 cityspeed = new Vector2(-nspeed(360), 0);
+            Vector2 cityspeed = new Vector2(-nspeed(120), 0);
             houserate = 45;
             
             if (sp)
@@ -286,8 +284,8 @@ namespace Airplane
             else
             {
                 plane.Speed = new Vector2(0, plane.Speed.Y);
-                if (plane.Rotation < 1.5f)
-                    plane.Rotation += 0.01f;
+                //if (plane.Rotation < 1.5f)
+                  //  plane.Rotation += 0.01f;
             }
 
             plane.Speed = new Vector2(0, -(float) (cityspeed.X*Math.Sin((double) plane.Rotation)));
@@ -318,12 +316,23 @@ namespace Airplane
             plane_anima.Update(gameTime);
             //stars_anima.Update(gameTime);
             base.Update(gameTime);
+
+            Console.WriteLine(ObjectHandler.Checks);
+            Console.WriteLine("========"+plain_collider.Count());
+            Console.WriteLine("------------------"+leftScreenTrigger.Count());
+            Console.WriteLine("----------------------------" + AnimationHandler.Instance.Count());
+            Console.WriteLine("__________________________________" + ImageHandler.Instance.Count());
+            ObjectHandler.Checks = 0;
         }
 
         protected void DrawLayer(GameLayer layer)
         {
             foreach (PositionedObject gameObject in layer)
             {
+                if (gameObject.Position.X < -2000)
+                {
+                    Console.WriteLine("WTF?");
+                }
                 if (ImageHandler.Instance.HasImage(gameObject))
                 {
                     IDrawable gameImage = ImageHandler.Instance.GetImage(gameObject);
@@ -335,7 +344,8 @@ namespace Airplane
                             (int)(gameImage.ImageSize.X * gameObject.Scale*gameImage.ImageScale), //dont forget about the scale
                             (int)(gameImage.ImageSize.Y * gameObject.Scale*gameImage.ImageScale)),
                          gameImage.SourceRect,  //animation works here
-                         Color.White,
+                         Color.LightSeaGreen,
+                         //new Color(255,252,219),
                          gameObject.Rotation + gameImage.ImageRotation,
                          gameObject.Origin,  //how to sum tow rotations? no matter
                          SpriteEffects.None,
@@ -431,6 +441,7 @@ namespace Airplane
             star.Scale = 0.7f-random.Next(3)*0.1f;
 
             star.Speed = new Vector2(-nspeed(30 - random.Next(60)), -nspeed(20 - random.Next(40)));
+            star.CollisionEvent = onStarHit;
 
             GameAnimation one_star_anim = stars_anima.Copy();
 
@@ -454,7 +465,7 @@ namespace Airplane
             string layer;
             if (dice < 55)
             {
-                scale = 0.1f;
+                scale = 1.1f;
                 layer = "clouds1";
             }
             else if (dice >= 55 && dice <= 88)
@@ -491,7 +502,20 @@ namespace Airplane
             {
                 stars_collected++;
                 ObjectHandler.instance.RemoveObjectFromList(other);
+                ObjectHandler.instance.RemoveObjectFromList((GameObject)ImageHandler.Instance.GetImage(other));
                 ObjectHandler.instance.RemoveObjectFromDictonary(other);
+            }
+        }
+
+        void onStarHit(DenseObject self, DenseObject other)
+        {
+            if (other.Tag == "Star")
+            {
+                //Vector2 temp;
+                //temp = self.Speed;
+                //self.Speed = other.Speed;
+                self.Speed = other.Speed;
+                other.Speed = Vector2.Zero;
             }
         }
 
@@ -515,6 +539,7 @@ namespace Airplane
                 {
                     Console.WriteLine("Star removed.");
                     ObjectHandler.instance.RemoveObjectFromList(other);
+                    ObjectHandler.instance.RemoveObjectFromList((GameObject)ImageHandler.Instance.GetImage(other));
                     ObjectHandler.instance.RemoveObjectFromDictonary(other);
                 }
             }

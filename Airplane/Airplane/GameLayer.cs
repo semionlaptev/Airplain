@@ -81,5 +81,10 @@ namespace Airplane
             }
         }
 
+        public double Count()
+        {
+            return objectlist_.Count();
+        }
+
     }
 }

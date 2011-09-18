@@ -18,5 +18,6 @@ namespace Airplane
         void AddObject(GameObject obj);
         void AddObjects(GameObject[] objs);
         void RemoveObject(GameObject obj);
+        double Count();
     }
 }

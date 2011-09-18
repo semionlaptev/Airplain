@@ -57,5 +57,10 @@ namespace Airplane
         {
             RemoveObject((PositionedObject)key);
         }
+
+        public double Count()
+        {
+            return objectslist_.Count();
+        }
     }
 }

@@ -129,10 +129,17 @@ namespace Airplane
         }
         bool isPointInRectangle(Vector2 point, Rectangle rect)
         {
+            ObjectHandler.Checks++;
             //Warning! Width and Height params are coordinates of the right top rectangle corner, not width and height of the rectangle 
             if (point.X >= rect.X && point.X <= rect.Width && point.Y >= rect.Y && point.Y <= rect.Height)
                 return true;
             return false;
+            
+        }
+
+        public double Count()
+        {
+            return objectslist_.Count();
         }
     }
 }

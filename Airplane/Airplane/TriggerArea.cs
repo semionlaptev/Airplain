@@ -60,7 +60,11 @@ namespace Airplane
         {
             triggerCollider_.checkCollisions();
         }
-    
+
+        public double Count()
+        {
+            return triggerCollider_.Count();
+        }
     }
 
 }
