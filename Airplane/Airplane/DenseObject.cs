@@ -16,8 +16,6 @@ using System.Diagnostics;
 namespace Airplane
 {
 
-    public delegate void CollisionEventDelegate(DenseObject obj1, DenseObject obj2);
-
     /// <summary>
     /// An object that can interact with other "dense" objects. 
     /// </summary>
@@ -26,7 +24,18 @@ namespace Airplane
     public class DenseObject : PositionedObject
     {
         public Rectangle CollisionRect { set; get; }
-        public CollisionEventDelegate CollisionEvent { get; set; }
+
+        public Rectangle CollisionRectPositionedScaled
+        {
+            get
+            {
+                return new Rectangle(
+                    (int)(this.Position.X + this.CollisionRect.X),
+                    (int)(this.Position.Y + this.CollisionRect.Y),
+                    (int)(this.CollisionRect.Width * this.Scale),
+                    (int)(this.CollisionRect.Height * this.Scale));
+            }
+        }
 
         public Vector2 SizeScaled
         {
@@ -59,7 +68,7 @@ namespace Airplane
 
         protected new void Initialize() 
         {
-            CollisionEvent = null;
+            //CollisionEvent = null;
         }
     }
 }

@@ -14,14 +14,16 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Airplane
 {
-    public class TriggerArea : DenseObject, IGameList, IEnumerable
+    public class TriggerArea : DenseObject, IGameList//, IEnumerable
     {
         Collider triggerCollider_ = new Collider();
-        //friend
+
+        public CollisionEventDelegate CollisionEvent { set { triggerCollider_.CollisionEvent = value; } get { return triggerCollider_.CollisionEvent; } }
+
         TriggerArea()
             : base()
         {
-
+            Initialize();
         }
 
         public TriggerArea(Rectangle rect)
@@ -32,33 +34,33 @@ namespace Airplane
 
         public void AddObject (GameObject obj)
         {
-            triggerCollider_.AddObject((DenseObject)obj);
+            triggerCollider_.RightCollider.AddObject((DenseObject)obj);
         }
 
         public void AddObjects(GameObject[] objs)
         {
-            triggerCollider_.AddObjects(objs);
+            triggerCollider_.RightCollider.AddObjects(objs);
         }
 
         public void RemoveObject(GameObject obj)
         {
-            triggerCollider_.RemoveObject((DenseObject)obj);
+            triggerCollider_.RightCollider.RemoveObject((DenseObject)obj);
         }
 
         public new void Initialize()
         {
             base.Initialize();
-            triggerCollider_.AddObject(this);
+            triggerCollider_.LeftCollider.AddObject(this);
         }
 
-        public IEnumerator GetEnumerator()
+        /*public IEnumerator GetEnumerator()
         {
             return triggerCollider_.GetEnumerator();
-        }
+        }*/
 
-        public void checkCollisions()
+        public void CheckCollisions()
         {
-            triggerCollider_.checkCollisions();
+            triggerCollider_.CheckCollisions();
         }
 
         public double Count()

@@ -78,8 +78,8 @@ namespace Airplane
             this.IsMouseVisible = true;
             device = graphics.GraphicsDevice;
             graphics.IsFullScreen = false;
-            graphics.PreferredBackBufferWidth = 1600;
-            graphics.PreferredBackBufferHeight = 800;
+            graphics.PreferredBackBufferWidth = 1000;
+            graphics.PreferredBackBufferHeight = 400;
             Window.Title = "Paper Plane";
             graphics.ApplyChanges();
             
@@ -194,10 +194,10 @@ namespace Airplane
             plain_collider = new Collider();
 
             //add dense objects to the collider
-            ObjectHandler.instance.AddObjectToList(plane, plain_collider);
-            plane.CollisionEvent = onPlayerHit;
+            ObjectHandler.instance.AddObjectToList(plane, plain_collider.LeftCollider);
+            plain_collider.CollisionEvent = onPlayerHit;
 
-            leftScreenTrigger = new TriggerArea(new Rectangle(-500, -300, 500, screenHeight+300));
+            leftScreenTrigger = new TriggerArea(new Rectangle(-1000, -300, 1000, screenHeight+300));
             leftScreenTrigger.CollisionEvent = onObjectInArea;
         }
 
@@ -223,8 +223,8 @@ namespace Airplane
             }
 
             //check it check
-            plain_collider.checkCollisions();
-            leftScreenTrigger.checkCollisions();
+            plain_collider.CheckCollisions();
+            leftScreenTrigger.CheckCollisions();
         }
 
         protected override void Update(GameTime gameTime)
@@ -273,7 +273,7 @@ namespace Airplane
                 
             }
 
-            Vector2 cityspeed = new Vector2(-nspeed(120), 0);
+            Vector2 cityspeed = new Vector2(-nspeed(360), 0);
             houserate = 45;
             
             if (sp)
@@ -284,8 +284,8 @@ namespace Airplane
             else
             {
                 plane.Speed = new Vector2(0, plane.Speed.Y);
-                //if (plane.Rotation < 1.5f)
-                  //  plane.Rotation += 0.01f;
+                if (plane.Rotation < 1.5f)
+                    plane.Rotation += 0.01f;
             }
 
             plane.Speed = new Vector2(0, -(float) (cityspeed.X*Math.Sin((double) plane.Rotation)));
@@ -317,11 +317,11 @@ namespace Airplane
             //stars_anima.Update(gameTime);
             base.Update(gameTime);
 
-            Console.WriteLine(ObjectHandler.Checks);
+            /*Console.WriteLine(ObjectHandler.Checks);
             Console.WriteLine("========"+plain_collider.Count());
             Console.WriteLine("------------------"+leftScreenTrigger.Count());
             Console.WriteLine("----------------------------" + AnimationHandler.Instance.Count());
-            Console.WriteLine("__________________________________" + ImageHandler.Instance.Count());
+            Console.WriteLine("__________________________________" + ImageHandler.Instance.Count());*/
             ObjectHandler.Checks = 0;
         }
 
@@ -344,7 +344,8 @@ namespace Airplane
                             (int)(gameImage.ImageSize.X * gameObject.Scale*gameImage.ImageScale), //dont forget about the scale
                             (int)(gameImage.ImageSize.Y * gameObject.Scale*gameImage.ImageScale)),
                          gameImage.SourceRect,  //animation works here
-                         Color.LightSeaGreen,
+                         Color.White,
+                         //Color.LightSeaGreen,
                          //new Color(255,252,219),
                          gameObject.Rotation + gameImage.ImageRotation,
                          gameObject.Origin,  //how to sum tow rotations? no matter
@@ -419,7 +420,7 @@ namespace Airplane
 
             house.Tag = "House";
 
-            ObjectHandler.instance.AddObjectToList(house, plain_collider);
+            ObjectHandler.instance.AddObjectToList(house, plain_collider.RightCollider);
             ObjectHandler.instance.AddObjectToList(house, leftScreenTrigger);
             ObjectHandler.instance.AddObjectToList(house, Layers["houses"]);
         }
@@ -441,13 +442,12 @@ namespace Airplane
             star.Scale = 0.7f-random.Next(3)*0.1f;
 
             star.Speed = new Vector2(-nspeed(30 - random.Next(60)), -nspeed(20 - random.Next(40)));
-            star.CollisionEvent = onStarHit;
 
             GameAnimation one_star_anim = stars_anima.Copy();
 
             ObjectHandler.instance.AddKeyValToDictionary(star, one_star_anim, ImageHandler.Instance);
             ObjectHandler.instance.AddObjectToList(one_star_anim, AnimationHandler.Instance);
-            ObjectHandler.instance.AddObjectToList(star, plain_collider);
+            ObjectHandler.instance.AddObjectToList(star, plain_collider.RightCollider);
             ObjectHandler.instance.AddObjectToList(star, leftScreenTrigger);
             ObjectHandler.instance.AddObjectToList(star, Layers["houses"]);
 
@@ -501,39 +501,30 @@ namespace Airplane
             else if (other.Tag == "Star")
             {
                 stars_collected++;
+                //other = null;
                 ObjectHandler.instance.RemoveObjectFromList(other);
                 ObjectHandler.instance.RemoveObjectFromList((GameObject)ImageHandler.Instance.GetImage(other));
                 ObjectHandler.instance.RemoveObjectFromDictonary(other);
             }
         }
 
-        void onStarHit(DenseObject self, DenseObject other)
-        {
-            if (other.Tag == "Star")
-            {
-                //Vector2 temp;
-                //temp = self.Speed;
-                //self.Speed = other.Speed;
-                self.Speed = other.Speed;
-                other.Speed = Vector2.Zero;
-            }
-        }
-
         protected void onObjectInArea(DenseObject self, DenseObject other)
         {
-            if (self.Position.X + self.SizeScaled.X > other.Position.X + other.SizeScaled.X)
+            if (self.CollisionRectPositionedScaled.Contains(other.CollisionRectPositionedScaled))
             {
                 if (other.Tag == "House")
                 {
                     Console.WriteLine("House removed.");
                     ObjectHandler.instance.RemoveObjectFromList(other);
                     ObjectHandler.instance.RemoveObjectFromDictonary(other);
+                    other = null;
                 }
                 else if (other.Tag == "Cloud")
                 {
                     Console.WriteLine("Cloud removed.");
                     ObjectHandler.instance.RemoveObjectFromList(other);
                     ObjectHandler.instance.RemoveObjectFromDictonary(other);
+                    other = null;
                 }
                 else if (other.Tag == "Star")
                 {
@@ -541,6 +532,7 @@ namespace Airplane
                     ObjectHandler.instance.RemoveObjectFromList(other);
                     ObjectHandler.instance.RemoveObjectFromList((GameObject)ImageHandler.Instance.GetImage(other));
                     ObjectHandler.instance.RemoveObjectFromDictonary(other);
+                    other = null;
                 }
             }
         }

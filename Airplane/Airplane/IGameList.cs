@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Airplane
 {
-    interface IGameList
+    public interface IGameList
     {
         void AddObject(GameObject obj);
         void AddObjects(GameObject[] objs);

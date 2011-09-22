@@ -14,132 +14,52 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Airplane
 {
-    public class Collider : IGameList, IEnumerable // check this huita
+    public delegate void CollisionEventDelegate(DenseObject obj1, DenseObject obj2);
+
+    public class Collider // check this huita
     {
-        List<DenseObject> objectslist_ = new List<DenseObject>();
+        GameList leftList_ = new GameList();
+        GameList rightList_ = new GameList();
+
+        public IGameList LeftCollider { get { return leftList_; } }
+        public IGameList RightCollider { get { return rightList_; } }
+
+        public CollisionEventDelegate CollisionEvent { set; get; }
 
         public Collider()
         {
 
         }
 
-        private void addObjectToCollider(DenseObject obj)
-        {
-            objectslist_.Add(obj);
-        }
-
-        public void AddObject(GameObject obj)
-        {
-            if (obj == null)
-                throw new Exception("Null object.");
-            addObjectToCollider((DenseObject)obj);
-        }
-
-        public void AddObjects(GameObject[] objs)
-        {
-            if(objs == null)
-                throw new Exception("Null array.");
-            foreach (GameObject obj in objs)
-            {
-                if (obj == null)
-                    throw new Exception("Null object.");
-                addObjectToCollider((DenseObject)obj);
-            }
-        }
-
-        public void checkCollisions()
+        public void CheckCollisions()
         {
             //check each with each objects not more than one time
-            for (int i = 0; i < objectslist_.Count - 1; i++)
+            for (int i = 0; i < leftList_.Count(); i++)
             {
-                for (int j = i + 1; j < objectslist_.Count; j++)
+                for (int j = i + 1; j < leftList_.Count(); j++) //check in leftList
                 {
-                    checkCollisionBetween(objectslist_[i], objectslist_[j]); //? is it good to perform this conversion
+                    checkCollisionBetween((DenseObject)leftList_[i], (DenseObject)leftList_[j]);
+                }
+                for (int j = 0; j < rightList_.Count(); j++)    //check in rightlist
+                {
+                    checkCollisionBetween((DenseObject)leftList_[i], (DenseObject)rightList_[j]);
                 }
             }
         }
 
-        private void removeObjectFromCollider (DenseObject obj)
-        {
-            objectslist_.Remove(obj);
-        }
-
-        public void RemoveObject(GameObject obj)
-        {
-            removeObjectFromCollider((DenseObject)obj);
-        }
-
-        public IEnumerator GetEnumerator()
-        {
-            return objectslist_.GetEnumerator();
-        }
-
-
-        /// <summary>
-        /// Check if object1 and object2 intersect each other by its collision rectangles. If true calls its CollisionEvent if defined.
-        /// </summary>
         protected void checkCollisionBetween(DenseObject obj1, DenseObject obj2)
         {
-            //Warning! Width and Height params are coordinates of the right top rectangle corner, not width and height of the rectangle
-            //the scale may cause troubles in future
-            Rectangle obj1_rect = new Rectangle(
-                (int)(obj1.Position.X + obj1.CollisionRect.X), 
-                (int)(obj1.Position.Y + obj1.CollisionRect.Y),
-                (int)(obj1.Position.X + obj1.CollisionRect.X + obj1.CollisionRect.Width * obj1.Scale),
-                (int)(obj1.Position.Y + obj1.CollisionRect.Y + obj1.CollisionRect.Height * obj1.Scale));
-
-           Rectangle obj2_rect = new Rectangle(
-                (int)(obj2.Position.X + obj2.CollisionRect.X), 
-                (int)(obj2.Position.Y + obj2.CollisionRect.Y),
-                (int)(obj2.Position.X + obj2.CollisionRect.X + obj2.CollisionRect.Width * obj2.Scale),
-                (int)(obj2.Position.Y + obj2.CollisionRect.Y + obj2.CollisionRect.Height * obj2.Scale));
-
-            if (checkRectanglesCollision(obj1_rect, obj2_rect) == true)
-            {
-                if (obj1.CollisionEvent != (CollisionEventDelegate)null)
-                    obj1.CollisionEvent(obj1, obj2);
-                if (obj2.CollisionEvent != (CollisionEventDelegate)null)   //???
-                    obj2.CollisionEvent(obj2, obj1);
-            }
-        }
-
-        bool checkRectanglesCollision(Rectangle rect1, Rectangle rect2)
-        {
-            ////Warning! Width and Height params are coordinates of the right top rectangle corner, not width and height of the rectangle
-            //recheck this method later
-            //is recr1 intersects rect2
-            if (isPointInRectangle(new Vector2(rect1.X, rect1.Y), rect2))
-                return true;
-            if (isPointInRectangle(new Vector2(rect1.Width, rect1.Y), rect2))
-                return true;
-            if (isPointInRectangle(new Vector2(rect1.X, rect1.Height), rect2))
-                return true;
-            if (isPointInRectangle(new Vector2(rect1.Width, rect1.Height), rect2))
-                return true;
-            //is recr2 intersects rect1
-            if (isPointInRectangle(new Vector2(rect2.X, rect2.Y), rect1))
-                return true;
-            if (isPointInRectangle(new Vector2(rect2.Width, rect2.Y), rect1))
-                return true;
-            if (isPointInRectangle(new Vector2(rect2.X, rect2.Height), rect1))
-                return true;
-            if (isPointInRectangle(new Vector2(rect2.Width, rect2.Height), rect1))
-                return true;
-            return false;
-        }
-        bool isPointInRectangle(Vector2 point, Rectangle rect)
-        {
             ObjectHandler.Checks++;
-            //Warning! Width and Height params are coordinates of the right top rectangle corner, not width and height of the rectangle 
-            if (point.X >= rect.X && point.X <= rect.Width && point.Y >= rect.Y && point.Y <= rect.Height)
-                return true;
-            return false;
-            
+            if (Rectangle.Intersect(obj1.CollisionRectPositionedScaled, obj2.CollisionRectPositionedScaled) != Rectangle.Empty)
+            {
+                if (CollisionEvent != null)
+                    CollisionEvent(obj1, obj2);
+            }
         }
 
         public double Count()
         {
-            return objectslist_.Count();
+            return rightList_.Count();
         }
     }
 }
