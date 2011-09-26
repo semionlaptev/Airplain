@@ -18,6 +18,7 @@ namespace Airplane
     
     public class Airplane : Microsoft.Xna.Framework.Game
     {
+        Vector2 cityspeed;
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         GraphicsDevice device;
@@ -57,6 +58,7 @@ namespace Airplane
         //class that will check collisions between DenseGameObjects that added.
         Collider plain_collider;
         TriggerArea leftScreenTrigger;
+        Physx physx = new Physx();
 
         GameAnimation plane_anima;
         GameAnimation stars_anima;
@@ -79,7 +81,7 @@ namespace Airplane
             device = graphics.GraphicsDevice;
             graphics.IsFullScreen = false;
             graphics.PreferredBackBufferWidth = 1000;
-            graphics.PreferredBackBufferHeight = 400;
+            graphics.PreferredBackBufferHeight = 900;
             Window.Title = "Paper Plane";
             graphics.ApplyChanges();
             
@@ -112,6 +114,8 @@ namespace Airplane
         {
             //ingame object init
             //setting the plane
+            cityspeed = new Vector2(-nspeed(360), 0);
+
             plane_animations["normal"] = new AnimationSequence(0, new List<int>() { 0,0,0,0,0,0, 1, 2, 3, 4, 5, 6, 7, 8,8,8,8,8,8 });
             plane_anima = new GameAnimation(planeImage, 1, 9);
             plane_anima.Play(plane_animations["normal"], LOOP_TYPE.LOOP_PINGPONG);
@@ -121,7 +125,7 @@ namespace Airplane
 
             plane = new DenseObject(
                 new Rectangle(100, 
-                    0, 
+                    100, 
                 (int)(plane_anima.ImageSize.X - plane_anima.ImageSize.X/2), 
                 (int)(plane_anima.ImageSize.Y- 1.5*plane_anima.ImageSize.Y/2))
                 );
@@ -129,9 +133,11 @@ namespace Airplane
             plane.Origin = new Vector2(plane_anima.Width / 3, plane_anima.Height / 3);
             ImageHandler.Instance.LinkObjectAndImage(plane, plane_anima);
             plane.Tag = "Player";
+            ObjectHandler.instance.AddKeyValToDictionary<PositionedObject,Vector2>(plane, new Vector2(0, nspeed(10)), physx, physx.addForce);
+
 
             //tune the plane
-            plane.Scale = 0.5f;
+            plane.Scale = 0.2f;
             plane.Origin = new Vector2(plane_anima.ImageSize.X / 3, plane_anima.ImageSize.Y / 3);
 
             stars_anima = new GameAnimation(SmallStars, 3, 6);
@@ -273,25 +279,28 @@ namespace Airplane
                 
             }
 
-            Vector2 cityspeed = new Vector2(-nspeed(360), 0);
             houserate = 45;
             
             if (sp)
             {
-                if (plane.Rotation > -1.5f)
-                    plane.Rotation -= 0.01f;    
+                //if (plane.Rotation > -1.5f)
+                    plane.Rotation -= 0.05f;    
             }
             else
             {
                 plane.Speed = new Vector2(0, plane.Speed.Y);
-                if (plane.Rotation < 1.5f)
-                    plane.Rotation += 0.01f;
+                if (Math.Cos(plane.Rotation) >= 0)
+                    plane.Rotation += 0.05f;
+                //else if (Math.Sin(plane.Rotation)>=0)
+                  //  plane.Rotation += 0.05f;
+                else
+                    plane.Rotation -= 0.05f;
             }
 
             plane.Speed = new Vector2(0, -(float) (cityspeed.X*Math.Sin((double) plane.Rotation)));
-            cityspeed = new Vector2((float)(cityspeed.X*Math.Cos((double)plane.Rotation)),0);
+            //cityspeed = new Vector2((float)(cityspeed.X*Math.Cos((double)plane.Rotation)),0);
 
-            Layers["houses"].Speed = cityspeed;
+            Layers["houses"].Speed = new Vector2((float)(cityspeed.X * Math.Cos((double)plane.Rotation)), 0);
 
             MoveObjects();
             CheckCollisions();
@@ -416,7 +425,7 @@ namespace Airplane
             int houseWidth = 100+random.Next(80);
 
             DenseObject house = new DenseObject(new Rectangle(screenWidth, screenHeight - houseHeight, houseWidth, houseHeight));
-            ObjectHandler.instance.AddKeyValToDictionary(house, new GameImage(houseImage, new Vector2(houseWidth, houseHeight)),ImageHandler.Instance);
+            ObjectHandler.instance.AddKeyValToDictionary(house, new GameImage(houseImage, new Vector2(houseWidth, houseHeight)),ImageHandler.Instance,ImageHandler.Instance.AddKeyVal);
 
             house.Tag = "House";
 

@@ -121,6 +121,7 @@
     <Compile Include="IGameList.cs" />
     <Compile Include="ImageHandler.cs" />
     <Compile Include="Collider.cs" />
+    <Compile Include="Physx.cs" />
     <Compile Include="TriggerArea.cs" />
     <Compile Include="ObjectImage.cs" />
     <Compile Include="ObjectHandler.cs" />

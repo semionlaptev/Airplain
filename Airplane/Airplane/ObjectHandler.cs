@@ -5,8 +5,10 @@ using System.Text;
 
 namespace Airplane
 {
+    public delegate void ObjectHandlerDictionaryDelegate<T,K>(T key, K val);
     class ObjectHandler //: IGameDictionary
     {
+
         private ObjectHandler() {}
         private static ObjectHandler instance_ = null;
 
@@ -31,7 +33,15 @@ namespace Airplane
             objectslists_.Remove(obj);
         }
 
-        public void AddKeyValToDictionary(GameObject objkey, GameObject objval, IGameDictionary dict)
+        public void AddKeyValToDictionary<T,K>(T objkey, K objval, IGameDictionary dict, ObjectHandlerDictionaryDelegate<T,K> method) where T: GameObject
+        {
+            method(objkey, objval); //add to IGameDictionary game object (ImageHandler)
+            if (objectsdicts_.ContainsKey(objkey) == false)
+                objectsdicts_[objkey] = new List<IGameDictionary>();
+            objectsdicts_[objkey].Add(dict);
+        }
+
+        public void AddKeyValToDictionary(GameObject objkey, object objval, IGameDictionary dict)
         {
             dict.AddKeyVal(objkey, objval); //add to IGameDictionary game object (ImageHandler)
             if (objectsdicts_.ContainsKey(objkey) == false)

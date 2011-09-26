@@ -48,7 +48,7 @@ namespace Airplane
 
 
         //IGameDictionary interface implementation
-        public void AddKeyVal(GameObject key, GameObject val)
+        public void AddKeyVal(GameObject key, object val)
         {
             LinkObjectAndImage((PositionedObject)key,(GameImage)val); //baaad
         }
