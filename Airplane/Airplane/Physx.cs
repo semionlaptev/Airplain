@@ -70,12 +70,12 @@ namespace Airplane
 
         public void RemoveByKey(GameObject key)
         {
-
+            removeObject((PositionedObject)key);
         }
 
         public void AddKeyVal(GameObject obj, object val)
         {
-
+            throw new NotSupportedException();
         }
 
 

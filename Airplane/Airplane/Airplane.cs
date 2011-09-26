@@ -3,8 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-//using mat
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
@@ -290,7 +288,7 @@ namespace Airplane
             {
                 plane.Speed = new Vector2(0, plane.Speed.Y);
                 if (Math.Cos(plane.Rotation) >= 0)
-                    plane.Rotation += 0.05f;
+                    plane.Rotation += 0.02f;
                 //else if (Math.Sin(plane.Rotation)>=0)
                   //  plane.Rotation += 0.05f;
                 else

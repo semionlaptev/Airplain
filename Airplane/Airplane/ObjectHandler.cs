@@ -33,17 +33,26 @@ namespace Airplane
             objectslists_.Remove(obj);
         }
 
-        public void AddKeyValToDictionary<T,K>(T objkey, K objval, IGameDictionary dict, ObjectHandlerDictionaryDelegate<T,K> method) where T: GameObject
+        public void AddKeyValToDictionary(GameObject objkey, object objval, IGameDictionary dict)
         {
-            method(objkey, objval); //add to IGameDictionary game object (ImageHandler)
+            dict.AddKeyVal(objkey, objval); //add to IGameDictionary game object (ImageHandler)
             if (objectsdicts_.ContainsKey(objkey) == false)
                 objectsdicts_[objkey] = new List<IGameDictionary>();
             objectsdicts_[objkey].Add(dict);
         }
 
-        public void AddKeyValToDictionary(GameObject objkey, object objval, IGameDictionary dict)
+        /// <summary>
+        /// Add to dictionary over the specified method.
+        /// </summary>
+        /// <typeparam name="T">Key type (must be derived from GameObject).</typeparam>
+        /// <typeparam name="K">Value type.</typeparam>
+        /// <param name="objkey">Key</param>
+        /// <param name="objval">Value</param>
+        /// <param name="dict">Dictionary object to add in (must implement IGameDictionary)</param>
+        /// <param name="method">The dictionary method to use for inserting.</param>
+        public void AddKeyValToDictionary<T,K>(T objkey, K objval, IGameDictionary dict, ObjectHandlerDictionaryDelegate<T,K> method) where T: GameObject
         {
-            dict.AddKeyVal(objkey, objval); //add to IGameDictionary game object (ImageHandler)
+            method(objkey, objval); //add to IGameDictionary game object (ImageHandler)
             if (objectsdicts_.ContainsKey(objkey) == false)
                 objectsdicts_[objkey] = new List<IGameDictionary>();
             objectsdicts_[objkey].Add(dict);
