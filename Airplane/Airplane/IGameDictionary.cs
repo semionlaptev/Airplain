@@ -7,7 +7,7 @@ namespace Airplane
 {
     interface IGameDictionary
     {
-        void AddKeyVal(GameObject keyobj, GameObject valobj);
+        void AddKeyVal(GameObject keyobj, object valobj);
         void RemoveByKey(GameObject keyobj);
         double Count();
     }
