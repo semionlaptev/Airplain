@@ -112,6 +112,10 @@
   <ItemGroup>
     <Compile Include="AnimationHandler.cs" />
     <Compile Include="AnimationSequence.cs" />
+    <Compile Include="CollidersManager.cs" />
+    <Compile Include="GameDrawer.cs" />
+    <Compile Include="ICollider.cs" />
+    <Compile Include="TextureManager.cs" />
     <Compile Include="GameAnimation.cs" />
     <Compile Include="GameImage.cs" />
     <Compile Include="GameList.cs" />
@@ -121,6 +125,7 @@
     <Compile Include="IGameList.cs" />
     <Compile Include="ImageHandler.cs" />
     <Compile Include="Collider.cs" />
+    <Compile Include="LayersManager.cs" />
     <Compile Include="Physx.cs" />
     <Compile Include="TriggerArea.cs" />
     <Compile Include="ObjectImage.cs" />

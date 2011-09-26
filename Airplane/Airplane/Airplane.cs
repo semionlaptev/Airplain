@@ -16,7 +16,7 @@ namespace Airplane
     
     public class Airplane : Microsoft.Xna.Framework.Game
     {
-        Vector2 cityspeed;
+        Vector2 planespeed;
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         GraphicsDevice device;
@@ -28,20 +28,6 @@ namespace Airplane
         float fps = 0;
         int stars_collected = 0;
         //layers
-        //List that will store game object layers. Each layer has a string name
-        Dictionary<string, GameLayer> Layers = new Dictionary<string, GameLayer>();
-
-        //object textures
-
-        Texture2D planeImage;
-        Texture2D skyImage;
-        Texture2D cityImage;
-        Texture2D cloudImage;
-        Texture2D houseImage;
-        Texture2D starsImage;
-        Texture2D mountainsImage;
-
-        Texture2D SmallStars;
 
         //ingame objects
         DenseObject plane;
@@ -50,13 +36,13 @@ namespace Airplane
         //decorative objects
         PositionedObject sky, stars;
         PositionedObject farcity, farcityTwin;
-        PositionedObject mountains, mountainsTwin;
+        PositionedObject mountains;
 
         SpriteFont font;
         //class that will check collisions between DenseGameObjects that added.
         Collider plain_collider;
         TriggerArea leftScreenTrigger;
-        Physx physx = new Physx();
+        
 
         GameAnimation plane_anima;
         GameAnimation stars_anima;
@@ -65,6 +51,10 @@ namespace Airplane
         Dictionary<string, AnimationSequence> stars_animations = new Dictionary<string, AnimationSequence>();
 
         Random random = new Random();
+
+        Physx physx = new Physx();
+        Force gravi = new Force(new Vector2(0,0.5f));
+        Force antigravi = new Force(new Vector2(0, -1));
 
         public Airplane()
         {
@@ -95,14 +85,14 @@ namespace Airplane
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             //load textures
-            SmallStars = Content.Load<Texture2D>("images/stars");
-            planeImage = Content.Load<Texture2D>("images/letright4");
-            skyImage = Content.Load<Texture2D>("images/sky");
-            cityImage = Content.Load<Texture2D>("images/backgroundcity");
-            cloudImage = Content.Load<Texture2D>("images/cloud3");
-            houseImage = Content.Load<Texture2D>("images/rect3102");
-            starsImage = Content.Load<Texture2D>("images/stars2");
-            mountainsImage = Content.Load<Texture2D>("images/smountains");
+            TextureManager.Instance["stars2"] = Content.Load<Texture2D>("images/stars");
+            TextureManager.Instance["plane"] = Content.Load<Texture2D>("images/letright4");
+            TextureManager.Instance["sky"] = Content.Load<Texture2D>("images/sky");
+            TextureManager.Instance["backgroundcity"] = Content.Load<Texture2D>("images/backgroundcity");
+            TextureManager.Instance["cloud"] = Content.Load<Texture2D>("images/cloud3");
+            TextureManager.Instance["house"] = Content.Load<Texture2D>("images/rect3102");
+            TextureManager.Instance["stars"] = Content.Load<Texture2D>("images/stars2");
+            TextureManager.Instance["mountains"] = Content.Load<Texture2D>("images/smountains");
 
             font = Content.Load<SpriteFont>("fonts/TextFont");
             InitializeGameObjects(); //shouldnaa't be here
@@ -112,10 +102,10 @@ namespace Airplane
         {
             //ingame object init
             //setting the plane
-            cityspeed = new Vector2(-nspeed(360), 0);
+            planespeed = new Vector2(nspeed(360), 0);
 
             plane_animations["normal"] = new AnimationSequence(0, new List<int>() { 0,0,0,0,0,0, 1, 2, 3, 4, 5, 6, 7, 8,8,8,8,8,8 });
-            plane_anima = new GameAnimation(planeImage, 1, 9);
+            plane_anima = new GameAnimation(TextureManager.Instance["plane"], 1, 9);
             plane_anima.Play(plane_animations["normal"], LOOP_TYPE.LOOP_PINGPONG);
             plane_anima.AnimationFPS = 12;
 
@@ -131,38 +121,42 @@ namespace Airplane
             plane.Origin = new Vector2(plane_anima.Width / 3, plane_anima.Height / 3);
             ImageHandler.Instance.LinkObjectAndImage(plane, plane_anima);
             plane.Tag = "Player";
-            ObjectHandler.instance.AddKeyValToDictionary<PositionedObject,Vector2>(plane, new Vector2(0, nspeed(10)), physx, physx.addForce);
 
+            //antigravy = new Vector2(0,-gravy.Y);
+            physx.addForce(plane, gravi);
+            physx.addForce(plane, antigravi);
+
+            plane.Speed = planespeed;
 
             //tune the plane
             plane.Scale = 0.2f;
             plane.Origin = new Vector2(plane_anima.ImageSize.X / 3, plane_anima.ImageSize.Y / 3);
 
-            stars_anima = new GameAnimation(SmallStars, 3, 6);
+            stars_anima = new GameAnimation(TextureManager.Instance["stars2"], 3, 6);
             stars_animations["star1"] = new AnimationSequence(0, new List<int>() { 0, 1, 2, 3, 4, 5 });
             stars_animations["star2"] = new AnimationSequence(1, new List<int>() { 0, 1, 2, 3, 4, 5 });
             stars_animations["star3"] = new AnimationSequence(2, new List<int>() { 0, 1, 2, 3, 4, 5 });
 
             //game decorations (sky + stars + background city))
             sky = new PositionedObject(new Vector2(0,0));
-            ImageHandler.Instance.LinkObjectAndImage(sky, new GameImage(skyImage, new Vector2(screenWidth, screenHeight)));
+            ImageHandler.Instance.LinkObjectAndImage(sky, new GameImage(TextureManager.Instance["sky"], new Vector2(screenWidth, screenHeight)));
 
             stars = new PositionedObject(new Vector2(0, 5));
-            ImageHandler.Instance.LinkObjectAndImage(stars, new GameImage(starsImage, new Vector2(screenWidth, screenHeight)));
+            ImageHandler.Instance.LinkObjectAndImage(stars, new GameImage(TextureManager.Instance["stars"], new Vector2(screenWidth, screenHeight)));
 
             //The "infinite" background city is made of two images that run looped each after other
             farcity = new PositionedObject(new Vector2(0, 5));
-            ImageHandler.Instance.LinkObjectAndImage(farcity, new GameImage(cityImage, new Vector2(screenWidth, screenHeight)));
+            ImageHandler.Instance.LinkObjectAndImage(farcity, new GameImage(TextureManager.Instance["backgroundcity"], new Vector2(screenWidth, screenHeight)));
 
             farcityTwin = new PositionedObject(new Vector2(screenWidth, 5));
-            ImageHandler.Instance.LinkObjectAndImage(farcityTwin, new GameImage(cityImage, new Vector2(screenWidth, screenHeight)));
+            ImageHandler.Instance.LinkObjectAndImage(farcityTwin, new GameImage(TextureManager.Instance["backgroundcity"], new Vector2(screenWidth, screenHeight)));
 
             //set the speed of the background city, better do it by layers
             farcity.Speed = new Vector2(-nspeed(30),0);
             farcityTwin.Speed = new Vector2(-nspeed(30), 0);
 
             mountains = new PositionedObject(new Vector2(0,200));
-            ImageHandler.Instance.LinkObjectAndImage(mountains, new GameImage(mountainsImage));
+            ImageHandler.Instance.LinkObjectAndImage(mountains, new GameImage(TextureManager.Instance["mountains"]));
             //mountains.Speed = new Vector2(-nspeed(20),0);
 
             InitializeLayers();
@@ -173,24 +167,24 @@ namespace Airplane
         {
             cloudsArea = new Rectangle(screenWidth, 0, 200, screenHeight / 3);
 
-            //layers init
-            Layers.Add("clouds3", new GameLayer(0.9f));
-            Layers.Add("houses", new GameLayer(0.86f));
-            Layers.Add("clouds2", new GameLayer(0.85f));
-            Layers.Add("plane", new GameLayer(0.8f));
-            Layers.Add("clouds1", new GameLayer(0.55f));
-            Layers.Add("farcity", new GameLayer(0.5f));
-            Layers.Add("mountains", new GameLayer(0.2f));
-            Layers.Add("stars", new GameLayer(0.1f));
-            Layers.Add("sky", new GameLayer(0.0f));
+            LayersManager.Instance.CreateLayer("clouds3", 0.9f);
+            LayersManager.Instance.CreateLayer("houses", 0.86f);
+            LayersManager.Instance.CreateLayer("clouds2", 0.85f);
+            LayersManager.Instance.CreateLayer("plane", 0.8f);
+            LayersManager.Instance.CreateLayer("clouds1", 0.55f);
+            LayersManager.Instance.CreateLayer("farcity", 0.5f);
+            LayersManager.Instance.CreateLayer("mountains", 0.2f);
+            LayersManager.Instance.CreateLayer("stars", 0.1f);
+            LayersManager.Instance.CreateLayer("sky", 0.0f);
 
             //add objects to the layers
-            Layers["plane"].AddObject(plane);
-            Layers["sky"].AddObject(sky);
-            Layers["stars"].AddObject(stars);
-            Layers["farcity"].AddObject(farcity);
-            Layers["farcity"].AddObject(farcityTwin);
-            Layers["mountains"].AddObject(mountains);
+            LayersManager.Instance["plane"].AddObject(plane);
+            LayersManager.Instance["sky"].AddObject(sky);
+            LayersManager.Instance["stars"].AddObject(stars);
+            LayersManager.Instance["farcity"].AddObject(farcity);
+            LayersManager.Instance["farcity"].AddObject(farcityTwin);
+            LayersManager.Instance["mountains"].AddObject(mountains);
+
         }
 
         protected void InitializeColliders()
@@ -203,6 +197,9 @@ namespace Airplane
 
             leftScreenTrigger = new TriggerArea(new Rectangle(-1000, -300, 1000, screenHeight+300));
             leftScreenTrigger.CollisionEvent = onObjectInArea;
+
+            CollidersManager.Instance.AddCollider(plain_collider);
+            CollidersManager.Instance.AddCollider(leftScreenTrigger);
         }
 
         protected override void UnloadContent()
@@ -212,7 +209,7 @@ namespace Airplane
 
         protected void MoveObjects()
         {
-            foreach (KeyValuePair<string, GameLayer> layer in Layers)
+            foreach (KeyValuePair<string, GameLayer> layer in LayersManager.Instance)
             {
                 layer.Value.Move();
             }
@@ -227,88 +224,59 @@ namespace Airplane
             }
 
             //check it check
-            plain_collider.CheckCollisions();
-            leftScreenTrigger.CheckCollisions();
+            CollidersManager.Instance.CheckCollisions();
         }
 
         protected override void Update(GameTime gameTime)
         {
-          
             if (gameTime.ElapsedGameTime.Milliseconds > 0)
                 fps = 1000.0f / gameTime.ElapsedGameTime.Milliseconds;
 
-            bool up = false;
             bool sp = false;
 
             KeyboardState kbState = Keyboard.GetState();
-            {
-                if (kbState.IsKeyDown(Keys.Up))
-                {
-                    up = true;
-                    plane_anima.Play(plane_animations["normal"], LOOP_TYPE.LOOP_BACKWARD);
-                }
 
-                if (kbState.IsKeyDown(Keys.Left))
-                {
-                    plane_anima.Play(plane_animations["normal"], LOOP_TYPE.LOOP_BACKWARD);
-                    up = false;
-                }
+            if (kbState.IsKeyDown(Keys.Space))
+                sp = true;
 
-                if (kbState.IsKeyDown(Keys.Space))
-                {
-                    sp = true;
-                }
-
-                if (kbState.IsKeyUp(Keys.Space))
-                {
-                    sp = false;
-                }
-
-            }
-
-            if (up)
-            {
-                //plane.Speed = new Vector2(plane.Speed.X, -nspeed(100));
-                
-            }
-            else
-            {
-                Layers["houses"].Speed = new Vector2(-nspeed(90), 0);
-                
-            }
-
-            houserate = 45;
+            if (kbState.IsKeyUp(Keys.Space))
+                sp = false;
             
             if (sp)
             {
-                //if (plane.Rotation > -1.5f)
-                    plane.Rotation -= 0.05f;    
+                physx.addImpulse(plane, new Vector2(0,-0.3f));
+                plane.Rotation -= 0.07f;    
             }
             else
             {
-                plane.Speed = new Vector2(0, plane.Speed.Y);
                 if (Math.Cos(plane.Rotation) >= 0)
-                    plane.Rotation += 0.02f;
-                //else if (Math.Sin(plane.Rotation)>=0)
-                  //  plane.Rotation += 0.05f;
+                    plane.Rotation += 0.01f;
                 else
                     plane.Rotation -= 0.05f;
             }
 
-            plane.Speed = new Vector2(0, -(float) (cityspeed.X*Math.Sin((double) plane.Rotation)));
-            //cityspeed = new Vector2((float)(cityspeed.X*Math.Cos((double)plane.Rotation)),0);
+            //antigravy.X = 0;
+            antigravi.Value = new Vector2(0, -gravi.Value.Y * (float)Math.Cos(plane.Rotation));
 
-            Layers["houses"].Speed = new Vector2((float)(cityspeed.X * Math.Cos((double)plane.Rotation)), 0);
+            physx.doPhysix();
+            planespeed = plane.Speed;
+            plane.Speed = new Vector2(0, planespeed.Y);
+            LayersManager.Instance["houses"].Speed = new Vector2(-planespeed.X, 0);
+            
+            //plane.Speed = new Vector2(0, -(float) (cityspeed.X*Math.Sin((double) plane.Rotation)));
+            //LayersManager.Instance["houses"].Speed = new Vector2((float)(cityspeed.X * Math.Cos((double)plane.Rotation)), 0);
 
             MoveObjects();
             CheckCollisions();
+
+            plane.Speed = planespeed;
 
             //generate houses and clouds
             if (random.Next(1000) <= houserate)
             {
                 objectSpawnHouse();
             }
-            if (random.Next(1000) <= 12)
+            if (random.Next(1000) <= houserate/3)
             {
                 objectSpawnCloud(cloudsArea);
             }
@@ -318,78 +286,21 @@ namespace Airplane
                 objectSpawnStar(cloudsArea);
             }
 
-
             AnimationHandler.Instance.Update(gameTime);
-            plane_anima.Update(gameTime);
-            //stars_anima.Update(gameTime);
             base.Update(gameTime);
 
-            /*Console.WriteLine(ObjectHandler.Checks);
-            Console.WriteLine("========"+plain_collider.Count());
-            Console.WriteLine("------------------"+leftScreenTrigger.Count());
-            Console.WriteLine("----------------------------" + AnimationHandler.Instance.Count());
-            Console.WriteLine("__________________________________" + ImageHandler.Instance.Count());*/
             ObjectHandler.Checks = 0;
         }
 
-        protected void DrawLayer(GameLayer layer)
-        {
-            foreach (PositionedObject gameObject in layer)
-            {
-                if (gameObject.Position.X < -2000)
-                {
-                    Console.WriteLine("WTF?");
-                }
-                if (ImageHandler.Instance.HasImage(gameObject))
-                {
-                    IDrawable gameImage = ImageHandler.Instance.GetImage(gameObject);
-                    spriteBatch.Draw(
-                        gameImage.Image,       //an object texture
-                        new Rectangle(          //an object size and position
-                            (int)(gameObject.Position.X), 
-                            (int)(gameObject.Position.Y),
-                            (int)(gameImage.ImageSize.X * gameObject.Scale*gameImage.ImageScale), //dont forget about the scale
-                            (int)(gameImage.ImageSize.Y * gameObject.Scale*gameImage.ImageScale)),
-                         gameImage.SourceRect,  //animation works here
-                         Color.White,
-                         //Color.LightSeaGreen,
-                         //new Color(255,252,219),
-                         gameObject.Rotation + gameImage.ImageRotation,
-                         gameObject.Origin,  //how to sum tow rotations? no matter
-                         SpriteEffects.None,
-                         layer.Depth);  //draw depth
-                }
-            }
-        }
-
-
-        /// <summary>
-        /// goes through layers list and calls DrawLayer for each one
-        /// </summary>
-        protected void DrawScene()
-        {
-            
-            foreach (KeyValuePair<string, GameLayer> layer in Layers)
-            {
-                DrawLayer(layer.Value);
-            }
-            
-        }
-
-        private void DrawText()
+        /*private void DrawText()
         {
             spriteBatch.DrawString(font, "stared: "+stars_collected, new Vector2(screenWidth-100, 20), Color.Red);
-        }
+        }*/
 
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.White);
-
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend);
-            DrawScene();
-            DrawText();
-            spriteBatch.End();
-
+            GameDrawer.Instance.Draw(spriteBatch);
             base.Draw(gameTime);
         }
 
@@ -423,13 +334,13 @@ namespace Airplane
             int houseWidth = 100+random.Next(80);
 
             DenseObject house = new DenseObject(new Rectangle(screenWidth, screenHeight - houseHeight, houseWidth, houseHeight));
-            ObjectHandler.instance.AddKeyValToDictionary(house, new GameImage(houseImage, new Vector2(houseWidth, houseHeight)),ImageHandler.Instance,ImageHandler.Instance.AddKeyVal);
+            ObjectHandler.instance.AddKeyValToDictionary(house, new GameImage(TextureManager.Instance["house"], new Vector2(houseWidth, houseHeight)), ImageHandler.Instance, ImageHandler.Instance.AddKeyVal);
 
             house.Tag = "House";
 
             ObjectHandler.instance.AddObjectToList(house, plain_collider.RightCollider);
             ObjectHandler.instance.AddObjectToList(house, leftScreenTrigger);
-            ObjectHandler.instance.AddObjectToList(house, Layers["houses"]);
+            ObjectHandler.instance.AddObjectToList(house, LayersManager.Instance["houses"]);
         }
 
         protected void objectSpawnStar(Rectangle spawnRect)
@@ -456,7 +367,7 @@ namespace Airplane
             ObjectHandler.instance.AddObjectToList(one_star_anim, AnimationHandler.Instance);
             ObjectHandler.instance.AddObjectToList(star, plain_collider.RightCollider);
             ObjectHandler.instance.AddObjectToList(star, leftScreenTrigger);
-            ObjectHandler.instance.AddObjectToList(star, Layers["houses"]);
+            ObjectHandler.instance.AddObjectToList(star, LayersManager.Instance["houses"]);
 
             one_star_anim.AnimationFPS = 12;
             one_star_anim.Play(stars_animations[anim], LOOP_TYPE.LOOP_NORMAL);
@@ -486,14 +397,14 @@ namespace Airplane
                 layer = "clouds3";
             }
 
-            DenseObject cloud = new DenseObject(new Rectangle(0,0,cloudImage.Width,cloudImage.Height));
-            ObjectHandler.instance.AddKeyValToDictionary(cloud, new GameImage(cloudImage), ImageHandler.Instance);
+            DenseObject cloud = new DenseObject(new Rectangle(0, 0, TextureManager.Instance["cloud"].Width, TextureManager.Instance["cloud"].Height));
+            ObjectHandler.instance.AddKeyValToDictionary(cloud, new GameImage(TextureManager.Instance["cloud"]), ImageHandler.Instance);
 
             cloud.Scale = scale + random.Next(50)*0.01f;
             cloud.Speed = new Vector2(-nspeed(120) * cloud.Scale, 0);
             cloud.Tag = "Cloud";
 
-            ObjectHandler.instance.AddObjectToList(cloud, Layers[layer]);
+            ObjectHandler.instance.AddObjectToList(cloud, LayersManager.Instance[layer]);
             ObjectHandler.instance.AddObjectToList(cloud, leftScreenTrigger);
             objectSpawnRandomInRect(cloud, spawnRect);
 

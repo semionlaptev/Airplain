@@ -14,7 +14,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Airplane
 {
-    public class TriggerArea : DenseObject, IGameList//, IEnumerable
+    public class TriggerArea : DenseObject, IGameList, ICollider//, IEnumerable
     {
         Collider triggerCollider_ = new Collider();
 
@@ -63,7 +63,7 @@ namespace Airplane
             triggerCollider_.CheckCollisions();
         }
 
-        public double Count()
+        public long Count()
         {
             return triggerCollider_.Count();
         }

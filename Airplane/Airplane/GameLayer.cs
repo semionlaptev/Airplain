@@ -36,6 +36,13 @@ namespace Airplane
             Depth = 0;
         }
 
+        public void AddObject(PositionedObject obj)
+        {
+            if (obj == null)
+                throw new Exception("Null object.");
+            objectlist_.Add(obj);
+        }
+
         public void AddObject(GameObject obj)
         {
             if (obj == null)
@@ -81,7 +88,7 @@ namespace Airplane
             }
         }
 
-        public double Count()
+        public long Count()
         {
             return objectlist_.Count();
         }

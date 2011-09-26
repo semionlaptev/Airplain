@@ -16,7 +16,7 @@ namespace Airplane
 {
     public delegate void CollisionEventDelegate(DenseObject obj1, DenseObject obj2);
 
-    public class Collider // check this huita
+    public class Collider : GameObject, ICollider // check this huita
     {
         GameList leftList_ = new GameList();
         GameList rightList_ = new GameList();
@@ -25,11 +25,6 @@ namespace Airplane
         public IGameList RightCollider { get { return rightList_; } }
 
         public CollisionEventDelegate CollisionEvent { set; get; }
-
-        public Collider()
-        {
-
-        }
 
         public void CheckCollisions()
         {
@@ -57,7 +52,7 @@ namespace Airplane
             }
         }
 
-        public double Count()
+        public long Count()
         {
             return rightList_.Count();
         }

@@ -18,6 +18,11 @@ namespace Airplane
         void AddObject(GameObject obj);
         void AddObjects(GameObject[] objs);
         void RemoveObject(GameObject obj);
-        double Count();
+        long Count();
+    }
+
+    public interface IGameList2<T>
+    {
+        void AddObject(T obj);
     }
 }

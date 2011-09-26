@@ -5,13 +5,36 @@ using System.Text;
 using System.Collections;
 
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Airplane
 {
+
+    public class Force
+    {
+        Vector2 force_;
+
+        public Force()
+        {
+            force_ = Vector2.Zero;
+        }
+
+        public Force(Vector2 force)
+        {
+            force_ = force;
+        }
+
+        public Vector2 Value
+        {
+            get { return force_; }
+            set { force_ = value; }
+        }
+    }
+
     class Physx:  IGameDictionary
     {
         //Храним ссылку на объект и результирующий вектор постоянно действующих сил
-        Dictionary<PositionedObject, Vector2> objectslist_ = new Dictionary<PositionedObject, Vector2>();
+        Dictionary<PositionedObject, List<Force>> objectslist_ = new Dictionary<PositionedObject, List<Force>>();
 
         //Тут можно было бы хранить различные физические константы
         //Можно запилить динамическую генерацию полей
@@ -22,20 +45,20 @@ namespace Airplane
             obj.Speed += impulse;
         }
 
-        public void addForce(PositionedObject obj, Vector2 force)
+        public void addForce(PositionedObject obj, Force force)
         {
             //Добавляем/изменяем постоянную силу, действующую на объект
             if (objectslist_.ContainsKey(obj) == false)
             {
-                objectslist_[obj] = new Vector2(force.X, force.Y);
+                objectslist_[obj] = new List<Force>() { force };
             }
             else
             {
-                objectslist_[obj] += force;
+                objectslist_[obj].Add(force);
             }
         }
 
-        public void setForce(PositionedObject obj, Vector2 vector)
+        /*public void setForce(PositionedObject obj, Vector2 vector)
         {
             //Возможность напрямую установить значение постоянной силы
             //Может пригодиться т.к. добавление и удаление сил производится математически
@@ -43,18 +66,31 @@ namespace Airplane
             //Бонус - телепортация
             //Кстати, общение через каментарии в коде заставляет его читать >_<
             objectslist_[obj] = vector;
+        }*/
+
+        public IGameList GetObjectForces(PositionedObject obj)
+        {
+            if (objectslist_.ContainsKey(obj))
+            {
+                return objectslist_[obj];
+            }
+            else
+            {
+                throw new Exception("No object found.");
+            }
         }
 
         public void doPhysix()
         {
             //Считаем физику
-            foreach (KeyValuePair<PositionedObject, Vector2> obj in objectslist_)
+            foreach (KeyValuePair<PositionedObject, List<Force>> obj in objectslist_)
             {
-                obj.Key.Speed += obj.Value;
+                foreach(Force force in obj.Value)
+                    obj.Key.Speed += force.Value;
             }
         }
 
-        public double Count()
+        public long Count()
         {
             return objectslist_.Count();
         }

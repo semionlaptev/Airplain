@@ -67,7 +67,7 @@ namespace Airplane
             }
         }
 
-        public double Count()
+        public long Count()
         {
             return objectslist_.Count();
         }
