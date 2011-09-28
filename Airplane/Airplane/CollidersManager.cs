@@ -5,12 +5,14 @@ using System.Text;
 
 namespace Airplane
 {
-    class CollidersManager:IGameList
+    class CollidersManager: IGameList
     {
-        List<ICollider> objectslist_ = new List<ICollider>();
+        #region Fields
+        private List<ICollider> objectslist_ = new List<ICollider>();
+        private static CollidersManager instance_ = null;
+        #endregion
 
-        //private readonly static AnimationHandler instance_ = new AnimationHandler();
-
+        #region Methods
         public void AddCollider(ICollider collider)
         {
             objectslist_.Add(collider);
@@ -21,7 +23,16 @@ namespace Airplane
             objectslist_.Remove(collider);
         }
 
-        //IGameList impl.
+        public void CheckCollisions()
+        {
+            foreach (ICollider collider in objectslist_)
+            {
+                collider.CheckCollisions();
+            }
+        }
+        #endregion
+
+        #region IGameList implementation
 
         public void AddObject(GameObject obj)
         {
@@ -46,15 +57,9 @@ namespace Airplane
             return objectslist_.Count();
         }
 
-        public void CheckCollisions()
-        {
-            foreach(ICollider collider in objectslist_)
-            {
-                collider.CheckCollisions();
-            }
-        }
+        #endregion
 
-        private static CollidersManager instance_ = null;
+        #region Singleton
         private CollidersManager() { }
         public static CollidersManager Instance
         {
@@ -65,6 +70,7 @@ namespace Airplane
                 return instance_;
             }
         }
+        #endregion
 
     }
 }

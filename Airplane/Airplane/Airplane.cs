@@ -54,7 +54,7 @@ namespace Airplane
 
         Physx physx = new Physx();
         Force gravi = new Force(new Vector2(0,0.5f));
-        Force antigravi = new Force(new Vector2(0, -1));
+        Force dragforce = new Force(new Vector2(0, -1));
 
         public Airplane()
         {
@@ -109,7 +109,7 @@ namespace Airplane
             plane_anima.Play(plane_animations["normal"], LOOP_TYPE.LOOP_PINGPONG);
             plane_anima.AnimationFPS = 12;
 
-            ObjectHandler.instance.AddObjectToList(plane_anima, AnimationHandler.Instance);
+            ObjectReferencesHandler.instance.AddObjectToList(plane_anima, AnimationHandler.Instance);
 
             plane = new DenseObject(
                 new Rectangle(100, 
@@ -124,7 +124,7 @@ namespace Airplane
 
             //antigravy = new Vector2(0,-gravy.Y);
             physx.addForce(plane, gravi);
-            physx.addForce(plane, antigravi);
+            physx.addForce(plane, dragforce);
 
             plane.Speed = planespeed;
 
@@ -192,7 +192,7 @@ namespace Airplane
             plain_collider = new Collider();
 
             //add dense objects to the collider
-            ObjectHandler.instance.AddObjectToList(plane, plain_collider.LeftCollider);
+            ObjectReferencesHandler.instance.AddObjectToList(plane, plain_collider.LeftCollider);
             plain_collider.CollisionEvent = onPlayerHit;
 
             leftScreenTrigger = new TriggerArea(new Rectangle(-1000, -300, 1000, screenHeight+300));
@@ -244,8 +244,8 @@ namespace Airplane
             
             if (sp)
             {
-                physx.addImpulse(plane, new Vector2(0,-0.3f));
-                plane.Rotation -= 0.07f;    
+                physx.addImpulse(plane, new Vector2(0,-nspeed(80)));
+                plane.Rotation -= 0.03f;    
             }
             else
             {
@@ -256,11 +256,23 @@ namespace Airplane
             }
 
             //antigravy.X = 0;
-            antigravi.Value = new Vector2(0, -gravi.Value.Y * (float)Math.Cos(plane.Rotation));
+            float S = 1.0f;
+            float ro = 1.225f;
+            float C = 0.3f;
+            if (sp == false)
+                dragforce.Value = new Vector2(0, -Math.Sign(plane.Speed.Y)*(float)Math.Pow(plane.Speed.Y, 2) * S * (float)Math.Cos(plane.Rotation) * ro * C / 2);
+            else
+                dragforce.Value = new Vector2(0, 0);
+
+            if (dragforce.Value.Y < -500)
+                throw new Exception();
+
+            Console.WriteLine(dragforce.Value.Y);
 
             physx.doPhysix();
+           // physx.GetObjectForces(plane);
             planespeed = plane.Speed;
-            plane.Speed = new Vector2(0, planespeed.Y);
+            plane.Speed = new Vector2(0.0f, planespeed.Y);
             LayersManager.Instance["houses"].Speed = new Vector2(-planespeed.X, 0);
             
             //plane.Speed = new Vector2(0, -(float) (cityspeed.X*Math.Sin((double) plane.Rotation)));
@@ -289,7 +301,7 @@ namespace Airplane
             AnimationHandler.Instance.Update(gameTime);
             base.Update(gameTime);
 
-            ObjectHandler.Checks = 0;
+            ObjectReferencesHandler.Checks = 0;
         }
 
         /*private void DrawText()
@@ -334,13 +346,13 @@ namespace Airplane
             int houseWidth = 100+random.Next(80);
 
             DenseObject house = new DenseObject(new Rectangle(screenWidth, screenHeight - houseHeight, houseWidth, houseHeight));
-            ObjectHandler.instance.AddKeyValToDictionary(house, new GameImage(TextureManager.Instance["house"], new Vector2(houseWidth, houseHeight)), ImageHandler.Instance, ImageHandler.Instance.AddKeyVal);
+            ObjectReferencesHandler.instance.AddKeyValToDictionary(house, new GameImage(TextureManager.Instance["house"], new Vector2(houseWidth, houseHeight)), ImageHandler.Instance, ImageHandler.Instance.AddKeyVal);
 
             house.Tag = "House";
 
-            ObjectHandler.instance.AddObjectToList(house, plain_collider.RightCollider);
-            ObjectHandler.instance.AddObjectToList(house, leftScreenTrigger);
-            ObjectHandler.instance.AddObjectToList(house, LayersManager.Instance["houses"]);
+            ObjectReferencesHandler.instance.AddObjectToList(house, plain_collider.RightCollider);
+            ObjectReferencesHandler.instance.AddObjectToList(house, leftScreenTrigger);
+            ObjectReferencesHandler.instance.AddObjectToList(house, LayersManager.Instance["houses"]);
         }
 
         protected void objectSpawnStar(Rectangle spawnRect)
@@ -363,11 +375,11 @@ namespace Airplane
 
             GameAnimation one_star_anim = stars_anima.Copy();
 
-            ObjectHandler.instance.AddKeyValToDictionary(star, one_star_anim, ImageHandler.Instance);
-            ObjectHandler.instance.AddObjectToList(one_star_anim, AnimationHandler.Instance);
-            ObjectHandler.instance.AddObjectToList(star, plain_collider.RightCollider);
-            ObjectHandler.instance.AddObjectToList(star, leftScreenTrigger);
-            ObjectHandler.instance.AddObjectToList(star, LayersManager.Instance["houses"]);
+            ObjectReferencesHandler.instance.AddKeyValToDictionary(star, one_star_anim, ImageHandler.Instance);
+            ObjectReferencesHandler.instance.AddObjectToList(one_star_anim, AnimationHandler.Instance);
+            ObjectReferencesHandler.instance.AddObjectToList(star, plain_collider.RightCollider);
+            ObjectReferencesHandler.instance.AddObjectToList(star, leftScreenTrigger);
+            ObjectReferencesHandler.instance.AddObjectToList(star, LayersManager.Instance["houses"]);
 
             one_star_anim.AnimationFPS = 12;
             one_star_anim.Play(stars_animations[anim], LOOP_TYPE.LOOP_NORMAL);
@@ -398,14 +410,14 @@ namespace Airplane
             }
 
             DenseObject cloud = new DenseObject(new Rectangle(0, 0, TextureManager.Instance["cloud"].Width, TextureManager.Instance["cloud"].Height));
-            ObjectHandler.instance.AddKeyValToDictionary(cloud, new GameImage(TextureManager.Instance["cloud"]), ImageHandler.Instance);
+            ObjectReferencesHandler.instance.AddKeyValToDictionary(cloud, new GameImage(TextureManager.Instance["cloud"]), ImageHandler.Instance);
 
             cloud.Scale = scale + random.Next(50)*0.01f;
             cloud.Speed = new Vector2(-nspeed(120) * cloud.Scale, 0);
             cloud.Tag = "Cloud";
 
-            ObjectHandler.instance.AddObjectToList(cloud, LayersManager.Instance[layer]);
-            ObjectHandler.instance.AddObjectToList(cloud, leftScreenTrigger);
+            ObjectReferencesHandler.instance.AddObjectToList(cloud, LayersManager.Instance[layer]);
+            ObjectReferencesHandler.instance.AddObjectToList(cloud, leftScreenTrigger);
             objectSpawnRandomInRect(cloud, spawnRect);
 
         }
@@ -420,9 +432,9 @@ namespace Airplane
             {
                 stars_collected++;
                 //other = null;
-                ObjectHandler.instance.RemoveObjectFromList(other);
-                ObjectHandler.instance.RemoveObjectFromList((GameObject)ImageHandler.Instance.GetImage(other));
-                ObjectHandler.instance.RemoveObjectFromDictonary(other);
+                ObjectReferencesHandler.instance.RemoveObjectFromList(other);
+                ObjectReferencesHandler.instance.RemoveObjectFromList((GameObject)ImageHandler.Instance.GetImage(other));
+                ObjectReferencesHandler.instance.RemoveObjectFromDictonary(other);
             }
         }
 
@@ -433,23 +445,23 @@ namespace Airplane
                 if (other.Tag == "House")
                 {
                     Console.WriteLine("House removed.");
-                    ObjectHandler.instance.RemoveObjectFromList(other);
-                    ObjectHandler.instance.RemoveObjectFromDictonary(other);
+                    ObjectReferencesHandler.instance.RemoveObjectFromList(other);
+                    ObjectReferencesHandler.instance.RemoveObjectFromDictonary(other);
                     other = null;
                 }
                 else if (other.Tag == "Cloud")
                 {
                     Console.WriteLine("Cloud removed.");
-                    ObjectHandler.instance.RemoveObjectFromList(other);
-                    ObjectHandler.instance.RemoveObjectFromDictonary(other);
+                    ObjectReferencesHandler.instance.RemoveObjectFromList(other);
+                    ObjectReferencesHandler.instance.RemoveObjectFromDictonary(other);
                     other = null;
                 }
                 else if (other.Tag == "Star")
                 {
                     Console.WriteLine("Star removed.");
-                    ObjectHandler.instance.RemoveObjectFromList(other);
-                    ObjectHandler.instance.RemoveObjectFromList((GameObject)ImageHandler.Instance.GetImage(other));
-                    ObjectHandler.instance.RemoveObjectFromDictonary(other);
+                    ObjectReferencesHandler.instance.RemoveObjectFromList(other);
+                    ObjectReferencesHandler.instance.RemoveObjectFromList((GameObject)ImageHandler.Instance.GetImage(other));
+                    ObjectReferencesHandler.instance.RemoveObjectFromDictonary(other);
                     other = null;
                 }
             }

@@ -8,8 +8,11 @@ namespace Airplane
 {
     class LayersManager :  IEnumerable
     {
-        Dictionary<string, GameLayer> objectsdict_ = new Dictionary<string, GameLayer>();
+        #region Fields
+        private Dictionary<string, GameLayer> objectsdict_ = new Dictionary<string, GameLayer>();
+        #endregion
 
+        #region Methods
         public GameLayer CreateLayer(string name, float depth)
         {
             if (objectsdict_.ContainsKey(name) == false)
@@ -48,6 +51,9 @@ namespace Airplane
             return objectsdict_.Count();
         }
 
+        #endregion
+
+        #region Singleton
         private static LayersManager instance;
         private LayersManager() { }
         public static LayersManager Instance
@@ -61,6 +67,7 @@ namespace Airplane
                  return instance;
             }
         }
+        #endregion
 
     }
 }

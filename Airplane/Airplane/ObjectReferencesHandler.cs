@@ -6,17 +6,23 @@ using System.Text;
 namespace Airplane
 {
     public delegate void ObjectHandlerDictionaryDelegate<T,K>(T key, K val);
-    class ObjectHandler //: IGameDictionary
+    class ObjectReferencesHandler //: IGameDictionary
     {
+        #region Fields
+        private Dictionary<GameObject, List<IGameList>> objectslists_ = new Dictionary<GameObject, List<IGameList>>();
+        private Dictionary<GameObject, List<IGameDictionary>> objectsdicts_ = new Dictionary<GameObject, List<IGameDictionary>>();
+        private static ObjectReferencesHandler instance_ = null;
+        #endregion
 
-        private ObjectHandler() {}
-        private static ObjectHandler instance_ = null;
+        public static int Checks { set; get; } //temp
 
-        public static int Checks {set;get;}
+        #region Methods
 
-        Dictionary<GameObject, List<IGameList>> objectslists_ = new Dictionary<GameObject, List<IGameList>>();
-        Dictionary<GameObject, List<IGameDictionary>> objectsdicts_ = new Dictionary<GameObject, List<IGameDictionary>>();
-
+        /// <summary>
+        /// Adds obj to list and saves the link.
+        /// </summary>
+        /// <param name="obj">GameObject to be added</param>
+        /// <param name="list">IGameList to add in</param>
         public void AddObjectToList(GameObject obj, IGameList list)
         {
             list.AddObject(obj); //add to collider/layer/etc...
@@ -24,6 +30,11 @@ namespace Airplane
                 objectslists_[obj] = new List<IGameList>();
             objectslists_[obj].Add(list);  //save the link
         }
+
+        /// <summary>
+        /// Removes object from all IGameLists
+        /// </summary>
+        /// <param name="obj">GameObject to be removed</param>
         public void RemoveObjectFromList(GameObject obj)
         {
             foreach (IGameList list in objectslists_[obj])
@@ -33,6 +44,12 @@ namespace Airplane
             objectslists_.Remove(obj);
         }
 
+        /// <summary>
+        /// Adds GameObject and any value(object) to IGameDictionary
+        /// </summary>
+        /// <param name="objkey">GameObject</param>
+        /// <param name="objval">value</param>
+        /// <param name="dict">IGameDictionary</param>
         public void AddKeyValToDictionary(GameObject objkey, object objval, IGameDictionary dict)
         {
             dict.AddKeyVal(objkey, objval); //add to IGameDictionary game object (ImageHandler)
@@ -58,6 +75,10 @@ namespace Airplane
             objectsdicts_[objkey].Add(dict);
         }
 
+        /// <summary>
+        /// Removes GameObject from all dictionaries it has been added in.
+        /// </summary>
+        /// <param name="obj">GameObject</param>
         public void RemoveObjectFromDictonary(GameObject obj)
         {
             foreach (IGameDictionary dict in objectsdicts_[obj])
@@ -67,16 +88,21 @@ namespace Airplane
             objectsdicts_.Remove(obj);
         }
 
-        public static ObjectHandler instance
+        #endregion
+
+        #region Singleton
+        private ObjectReferencesHandler() { }
+        public static ObjectReferencesHandler instance
         {
             get
             {
                 if (instance_ == null)
                 {
-                    instance_ = new ObjectHandler();
+                    instance_ = new ObjectReferencesHandler();
                 }
                 return instance_;
             }
         }
+        #endregion
     }
 }

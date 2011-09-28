@@ -143,7 +143,7 @@ namespace Airplane
         {
             denseobjectlist.Remove((DenseObject)obj);
         }
-        public double Count()
+        public long Count()
         {
             return denseobjectlist.Count;
         }

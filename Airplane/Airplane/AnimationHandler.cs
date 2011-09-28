@@ -9,12 +9,12 @@ namespace Airplane
 {
     class AnimationHandler : IGameList
     {
-
-        List<GameAnimation> objectslist_ = new List<GameAnimation>();
-
+        #region Fields
+        private List<GameAnimation> objectslist_ = new List<GameAnimation>();
         private static AnimationHandler instance_ = null;
-        //private readonly static AnimationHandler instance_ = new AnimationHandler();
+        #endregion
 
+        #region Singleton
         private AnimationHandler() { }
         public static AnimationHandler Instance
         {
@@ -25,7 +25,9 @@ namespace Airplane
                 return instance_;
             }
         }
+        #endregion
 
+        #region Methods
         void AddAnimation(GameAnimation anim)
         {
             if(objectslist_.Contains(anim) == false)
@@ -46,8 +48,9 @@ namespace Airplane
                 anim.Update(gameTime);
             }
         }
+        #endregion
 
-        //IGameList impl.
+        #region IGameList implementation
 
         public void AddObject(GameObject obj)
         {
@@ -71,6 +74,7 @@ namespace Airplane
         {
             return objectslist_.Count();
         }
+        #endregion
 
     }
 }

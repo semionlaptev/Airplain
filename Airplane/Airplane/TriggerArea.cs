@@ -14,17 +14,18 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Airplane
 {
-    public class TriggerArea : DenseObject, IGameList, ICollider//, IEnumerable
+    public class TriggerArea : DenseObject, IGameList, ICollider
     {
-        Collider triggerCollider_ = new Collider();
+        #region Fields
+        private Collider triggerCollider_ = new Collider();
+        private Dictionary<DenseObject, bool> isInArea_ = new Dictionary<DenseObject, bool>();
+        #endregion
 
+        #region Properties
         public CollisionEventDelegate CollisionEvent { set { triggerCollider_.CollisionEvent = value; } get { return triggerCollider_.CollisionEvent; } }
+        #endregion
 
-        TriggerArea()
-            : base()
-        {
-            Initialize();
-        }
+        #region Initalization
 
         public TriggerArea(Rectangle rect)
             : base(rect)
@@ -32,41 +33,55 @@ namespace Airplane
             Initialize();
         }
 
-        public void AddObject (GameObject obj)
+        public void Initialize()
         {
-            triggerCollider_.RightCollider.AddObject((DenseObject)obj);
-        }
-
-        public void AddObjects(GameObject[] objs)
-        {
-            triggerCollider_.RightCollider.AddObjects(objs);
-        }
-
-        public void RemoveObject(GameObject obj)
-        {
-            triggerCollider_.RightCollider.RemoveObject((DenseObject)obj);
-        }
-
-        public new void Initialize()
-        {
-            base.Initialize();
             triggerCollider_.LeftCollider.AddObject(this);
         }
 
-        /*public IEnumerator GetEnumerator()
+        #endregion
+
+        #region Methods
+        public void AddDenseObject(DenseObject obj)
         {
-            return triggerCollider_.GetEnumerator();
-        }*/
+            triggerCollider_.RightCollider.AddObject(obj);
+            isInArea_[obj] = triggerCollider_.DoIntersect(this, obj);    //remember current state
+        }
+
+        public void RemoveDenseObject(DenseObject obj)
+        {
+            triggerCollider_.RightCollider.RemoveObject(obj);
+        }
 
         public void CheckCollisions()
         {
             triggerCollider_.CheckCollisions();
+        }
+        #endregion
+
+        #region IGameList Implementation
+        public void AddObject (GameObject obj)
+        {
+            AddDenseObject((DenseObject)obj);
+        }
+
+        public void AddObjects(GameObject[] objs)
+        {
+            foreach(GameObject obj in objs)
+                AddDenseObject((DenseObject)obj);
+        }
+
+        public void RemoveObject(GameObject obj)
+        {
+            RemoveDenseObject((DenseObject)obj);
         }
 
         public long Count()
         {
             return triggerCollider_.Count();
         }
+
+        #endregion
+
     }
 
 }

@@ -10,64 +10,59 @@ namespace Airplane
 {
     public class GameImage: GameObject, IDrawable
     {
-        private Texture2D image_;
-        public Texture2D Image { private set { image_ = value; } get { return image_; } }
+        #region Fields
+        private Texture2D image_ = null;
+        private Vector2 imageSize_ = Vector2.Zero;
+        private float imageScale_ = 1.0f;
+        private float imageRotation_ = 0.0f;
+        private Vector2 imageOrigin_ = Vector2.Zero;
+        private Rectangle sourceRect_ = Rectangle.Empty;
+        #endregion
 
-        Vector2 size_;
+        #region Properties
+        public Texture2D Image { private set { image_ = value; } get { return image_; } }
         public Vector2 ImageSize { 
             get {
-                if (size_ == Vector2.Zero)
+                if (imageSize_ == Vector2.Zero)
                     if (Image != null)
                         return new Vector2(Image.Width, Image.Height);
                     else
                         return Vector2.Zero;
                 else
-                    return size_;
+                    return imageSize_;
             } 
             set {
-                size_ = value;
+                imageSize_ = value;
             } 
         }
 
         public float Width { get { return ImageSize.X; }}
         public float Height { get { return ImageSize.Y; }}
+        public float ImageScale { get { return imageScale_; } set { imageScale_ = value; } }
+        public float ImageRotation { get { return imageRotation_; } set { imageRotation_ = value; } }
+        public Vector2 ImageOrigin { get { return imageOrigin_; } set { imageOrigin_ = value; } }
+        public virtual Rectangle SourceRect {  get{return sourceRect_;} set {sourceRect_ = value;}}
+        #endregion
 
-        public float ImageScale { set; get; }
-        public float ImageRotation { set; get; }
-
-        public Vector2 ImageOrigin { set; get; }
-        public virtual Rectangle SourceRect { set; get; }
+        #region Init
 
         protected GameImage()
         {
-            Initialize();
         }
 
         public GameImage(Texture2D img)
         {
-            Initialize();
             Image = img;
             SourceRect = new Rectangle(0, 0, Image.Width, Image.Height);
         }
 
         public GameImage(Texture2D img, Vector2 size)
         {
-            Initialize();
             Image = img;
             SourceRect = new Rectangle(0, 0, Image.Width, Image.Height);
             ImageSize = size;
         }
-
-        private void Initialize()
-        {
-            ImageScale = 1.0f;
-            ImageOrigin = Vector2.Zero;
-            ImageRotation = 0.0f;
-
-            SourceRect = new Rectangle(0, 0, 0, 0);
-            size_ = Vector2.Zero;
-            Image = null;
-        }
+        #endregion
 
     }
 }

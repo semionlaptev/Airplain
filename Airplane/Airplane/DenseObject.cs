@@ -19,12 +19,16 @@ namespace Airplane
     /// <summary>
     /// An object that can interact with other "dense" objects. 
     /// </summary>
-    /// <param name="CollisionRect">Rectangle that sets "sensitive" region. Is relative to the object position.</param>
-    /// <param name="CollisionEvent">Delegate method that will be called if collision happenes</param>
+    /// <param name="CollisionRect">Rectangle that sets "sensitive" region. It is relative to the object position.</param>
+    /// <param name="CollisionEvent">A delegate method that will be called if the collision happens</param>
     public class DenseObject : PositionedObject
     {
-        public Rectangle CollisionRect { set; get; }
+        #region Fields
+        private Rectangle collisionRect_ = Rectangle.Empty;
+        #endregion
 
+        #region Properties
+        public Rectangle CollisionRect { get { return collisionRect_; } set { collisionRect_ = value; } }
         public Rectangle CollisionRectPositionedScaled
         {
             get
@@ -36,7 +40,6 @@ namespace Airplane
                     (int)(this.CollisionRect.Height * this.Scale));
             }
         }
-
         public Vector2 SizeScaled
         {
             private set { }
@@ -45,30 +48,28 @@ namespace Airplane
                 return new Vector2(CollisionRect.Width, CollisionRect.Height) * Scale;
             }
         }
+        #endregion
 
-        protected DenseObject() : base()
-        {
-
-        }
+        #region Initialization
 
         public DenseObject(Vector2 position, Rectangle rect) :
             base(position)
         {
-            Initialize();
             CollisionRect = rect;
         }
 
         public DenseObject(Rectangle rect):
             base(new Vector2(rect.X,rect.Y))
         {
-            Initialize();
             CollisionRect = new Rectangle(0, 0, rect.Width, rect.Height);         
         }
 
-
-        protected new void Initialize() 
+        public DenseObject(Vector2 position, Texture2D image):
+            base(position)
         {
-            //CollisionEvent = null;
+            CollisionRect = new Rectangle(0, 0, image.Width, image.Height);   
         }
+
+        #endregion
     }
 }

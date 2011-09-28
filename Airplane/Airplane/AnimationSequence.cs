@@ -9,11 +9,15 @@ namespace Airplane
 {
     public class AnimationSequence
     {
-        List<Vector2> framesSequence_;
+        #region Fields
+        private List<Vector2> framesSequence_ = new List<Vector2>() {Vector2.Zero}; //?
+        #endregion
+
+        #region Init
 
         public AnimationSequence()
         {
-            Initialize();
+
         }
 
         public AnimationSequence(int row, List<int> cols)
@@ -37,7 +41,7 @@ namespace Airplane
         {
             if (rows.Count() != cols.Count())
             {
-                throw new Exception("Lists have different length.");
+                throw new Exception("Lists have different length.");    //an exception in a constructor?
             }
 
             framesSequence_ = new List<Vector2>();
@@ -53,6 +57,9 @@ namespace Airplane
             framesSequence_ = seq;
         }
 
+        #endregion
+
+        #region Methods
         public Vector2 getFrame(int i)
         {
             if (i >= Count() || i<0)
@@ -65,9 +72,6 @@ namespace Airplane
             return framesSequence_.Count();
         }
 
-        void Initialize()
-        {
-            framesSequence_ = new List<Vector2>() { Vector2.Zero};
-        }
+        #endregion
     }
 }

@@ -7,25 +7,11 @@ namespace Airplane
 {
     public class ImageHandler : IGameDictionary
     {
+        #region Fields
+        private Dictionary<PositionedObject, IDrawable> objectslist_ = new Dictionary<PositionedObject, IDrawable>();
+        #endregion
 
-        private static ImageHandler instance;
-
-        private ImageHandler() { }
-
-        public static ImageHandler Instance
-        {
-             get 
-            {
-                if (instance == null)
-                 {
-                     instance = new ImageHandler();
-                 }
-                 return instance;
-            }
-        }
-
-        Dictionary<PositionedObject, IDrawable> objectslist_ = new Dictionary<PositionedObject, IDrawable>();
-
+        #region Methods
         public void LinkObjectAndImage(PositionedObject obj,GameImage image)
         {
             objectslist_[obj] = image;
@@ -45,9 +31,25 @@ namespace Airplane
         {
             objectslist_.Remove(obj);
         }
+        #endregion
 
+        #region Singleton
+        private static ImageHandler instance;
+        private ImageHandler() { }
+        public static ImageHandler Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new ImageHandler();
+                }
+                return instance;
+            }
+        }
+        #endregion
 
-        //IGameDictionary interface implementation
+        #region IGameDictionary implementation
         public void AddKeyVal(GameObject key, object val)
         {
             LinkObjectAndImage((PositionedObject)key,(GameImage)val); //baaad
@@ -62,5 +64,7 @@ namespace Airplane
         {
             return objectslist_.Count();
         }
+        #endregion
+
     }
 }

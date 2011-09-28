@@ -16,16 +16,29 @@ namespace Airplane
 {
     public delegate void CollisionEventDelegate(DenseObject obj1, DenseObject obj2);
 
-    public class Collider : GameObject, ICollider // check this huita
+    public class Collider : GameObject, ICollider
     {
-        GameList leftList_ = new GameList();
-        GameList rightList_ = new GameList();
+        #region Fields
+        
+        private GameList<DenseObject> leftList_ = new GameList<DenseObject>();
+        private GameList<DenseObject> rightList_ = new GameList<DenseObject>();
+        private CollisionEventDelegate collisionEvent_ = null;
+
+        #endregion
+
+        #region Properties
 
         public IGameList LeftCollider { get { return leftList_; } }
         public IGameList RightCollider { get { return rightList_; } }
+        public CollisionEventDelegate CollisionEvent { get { return collisionEvent_; } set { collisionEvent_ = value; } }
 
-        public CollisionEventDelegate CollisionEvent { set; get; }
+        #endregion
 
+        #region Methods
+
+        /// <summary>
+        /// Checks collisions between object in the lists
+        /// </summary>
         public void CheckCollisions()
         {
             //check each with each objects not more than one time
@@ -42,19 +55,38 @@ namespace Airplane
             }
         }
 
+        /// <summary>
+        /// Check if two objects intersect each other and calls CollisionEvent if true.
+        /// </summary>
+        /// <param name="obj1"></param>
+        /// <param name="obj2"></param>
         protected void checkCollisionBetween(DenseObject obj1, DenseObject obj2)
         {
-            ObjectHandler.Checks++;
-            if (Rectangle.Intersect(obj1.CollisionRectPositionedScaled, obj2.CollisionRectPositionedScaled) != Rectangle.Empty)
+            ObjectReferencesHandler.Checks++;
+            if (DoIntersect(obj1,obj2))
             {
+                //Rectangle rect = Rectangle.Intersect(obj1.CollisionRectPositionedScaled, obj2.CollisionRectPositionedScaled);
                 if (CollisionEvent != null)
                     CollisionEvent(obj1, obj2);
             }
+        }
+
+        /// <summary>
+        /// Returns true if two objects specified intersect each other
+        /// </summary>
+        /// <param name="obj1"></param>
+        /// <param name="obj2"></param>
+        /// <returns></returns>
+        public bool DoIntersect(DenseObject obj1, DenseObject obj2)
+        {
+            return Rectangle.Intersect(obj1.CollisionRectPositionedScaled, obj2.CollisionRectPositionedScaled) != Rectangle.Empty;
         }
 
         public long Count()
         {
             return rightList_.Count();
         }
+        #endregion
+
     }
 }

@@ -10,6 +10,8 @@ namespace Airplane
 {
     class GameDrawer
     {
+
+        #region Methods
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend);
@@ -18,7 +20,7 @@ namespace Airplane
         }
 
         /// <summary>
-        /// goes through layers list and calls DrawLayer for each one
+        /// goes through GameLayers list and calls DrawLayer for each layer
         /// </summary>
         void DrawScene(SpriteBatch spriteBatch)
         {
@@ -57,7 +59,9 @@ namespace Airplane
                 }
             }
         }
+        #endregion
 
+        #region Singleton
         private static GameDrawer instance_ = null;
         private GameDrawer() { }
         public static GameDrawer Instance
@@ -69,6 +73,7 @@ namespace Airplane
                 return instance_;
             }
         }
+        #endregion
 
     }
 }

@@ -115,6 +115,7 @@
     <Compile Include="CollidersManager.cs" />
     <Compile Include="GameDrawer.cs" />
     <Compile Include="ICollider.cs" />
+    <Compile Include="ObjectReferencesHandler.cs" />
     <Compile Include="TextureManager.cs" />
     <Compile Include="GameAnimation.cs" />
     <Compile Include="GameImage.cs" />
@@ -129,7 +130,6 @@
     <Compile Include="Physx.cs" />
     <Compile Include="TriggerArea.cs" />
     <Compile Include="ObjectImage.cs" />
-    <Compile Include="ObjectHandler.cs" />
     <Compile Include="DenseObject.cs" />
     <Compile Include="GameLayer.cs" />
     <Compile Include="PositionedObject.cs" />

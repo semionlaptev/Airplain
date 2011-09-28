@@ -16,37 +16,37 @@ namespace Airplane
 {
     public class PositionedObject: GameObject
     {
-        
-        public Vector2 Position {get;set;} 
-        public float Scale { set; get; }
-        public float Rotation { set; get; }
-        public Vector2 Speed { get; set; }
+        #region Fields
+        private Vector2 position_ = Vector2.Zero;
+        private float scale_ = 1.0f;
+        private float rotation_ = 0.0f;
+        private Vector2 speed_ = Vector2.Zero;
+        private Vector2 origin_ = Vector2.Zero;
+        #endregion
 
-        public Vector2 Origin { get; set; }
-        //private Vector2 origin_;
+        #region Properties
+        public Vector2 Position { get { return position_; } set { position_ = value; } }
+        public float Scale { get { return scale_; } set { scale_ = value; } }
+        public float Rotation { get { return rotation_; } set { rotation_ = value; } }
+        public Vector2 Speed { get { return speed_; } set { speed_ = value; } }
+        public Vector2 Origin { get { return origin_; } set { origin_ = value; } }
         //public Vector2 Origin { get { return new Vector2(origin_.X * Scale, origin_.Y*Scale); } set { origin_ = value; } } //TODO: test it with scale
+        #endregion
+
+        #region Initialization
 
         protected PositionedObject()
         {
-            Initialize();
         }
 
         public PositionedObject(Vector2 position)
         {
-            Initialize();
             Position = position;
         }
 
-        protected void Initialize()
-        {
-                       
-            Scale = 1.0f;
-            Rotation = 0.0f;
-            Position = Vector2.Zero;
-            Speed = Vector2.Zero;
-            Origin = Vector2.Zero;            
-        }
+        #endregion
 
+        #region Methods
         public virtual void Move()
         {
             Position += Speed;
@@ -55,6 +55,7 @@ namespace Airplane
         {
             Position += Speed+parent_speed;
         }
+        #endregion
 
     }
 }

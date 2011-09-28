@@ -20,55 +20,24 @@ namespace Airplane
     /// TODO: Layer postions support. Proper objects scaling 
     public class GameLayer : PositionedObject, IGameList, IEnumerable
     {
-        List<PositionedObject> objectlist_ = new List<PositionedObject>();
 
-        public float Depth { set; get; }
+        #region Fields
+        private List<PositionedObject> objectlist_ = new List<PositionedObject>();
+        private float depth_ = 0.0f;
+        #endregion
 
+        #region Properties
+        public float Depth { get { return depth_; } set { depth_ = value; } }
+        #endregion
+
+        #region Init
         public GameLayer(float depth)
-            : base()
         {
-            Initialize();
             Depth = depth;
         }
-        
-        protected new void Initialize()
-        {
-            Depth = 0;
-        }
+        #endregion
 
-        public void AddObject(PositionedObject obj)
-        {
-            if (obj == null)
-                throw new Exception("Null object.");
-            objectlist_.Add(obj);
-        }
-
-        public void AddObject(GameObject obj)
-        {
-            if (obj == null)
-                throw new Exception("Null object.");
-            objectlist_.Add((PositionedObject)obj);
-        }
-
-        public void AddObjects(GameObject[] objs)
-        {
-            if (objs == null)
-                throw new Exception("Null array.");
-            foreach (GameObject obj in objs)
-                objectlist_.Add((PositionedObject)obj);
-        }
-
-        public void RemoveObject(GameObject obj)
-        {
-            objectlist_.Remove((PositionedObject)obj);
-        }
-
-        //implementation of IEnumerable interface
-
-        public IEnumerator GetEnumerator()
-        {
-            return objectlist_.GetEnumerator();
-        }
+        #region Methods
 
         public override void Move(Vector2 parent_speed)
         {
@@ -88,10 +57,51 @@ namespace Airplane
             }
         }
 
+        public void AddObject(PositionedObject obj)
+        {
+            if (obj == null)
+                throw new Exception("Null object.");
+            objectlist_.Add(obj);
+        }
+
+        public void RemoveObject(PositionedObject obj)
+        {
+            objectlist_.Remove(obj);
+        }
+
+        #endregion
+
+        #region IGameList implementation
+
+        public void AddObject(GameObject obj)
+        {
+            AddObject((PositionedObject)obj);
+        }
+
+        public void AddObjects(GameObject[] objs)
+        {
+            foreach (GameObject obj in objs)
+                AddObject((PositionedObject)obj);
+        }
+
+        public void RemoveObject(GameObject obj)
+        {
+            RemoveObject((PositionedObject)obj);
+        }
+
+        //implementation of IEnumerable interface
+
+        public IEnumerator GetEnumerator()
+        {
+            return objectlist_.GetEnumerator();
+        }
+
         public long Count()
         {
             return objectlist_.Count();
         }
+
+        #endregion
 
     }
 }

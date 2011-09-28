@@ -5,25 +5,43 @@ using System.Text;
 
 namespace Airplane
 {
-    class GameList : IGameList
+    class GameList<T> : IGameList where T:GameObject
     {
-        List<GameObject> list_ = new List<GameObject>();
+        #region Fields
+        private List<T> list_ = new List<T>();
+        #endregion
 
+        #region Init
         public GameList()
         {
 
         }
+        #endregion
 
-        public GameObject this[int i]
+        #region Methods
+        public T this[int i]
         {
             get { return list_[i]; }
         }
 
-        public void AddObject(GameObject obj)
+        public void AddObject(T obj)
         {
             if (obj == null)
                 throw new Exception("Null object.");
             list_.Add(obj);
+        }
+
+        public void RemoveObject(T obj)
+        {
+            list_.Remove(obj);
+        }
+
+        #endregion
+
+        #region IGameList implementation
+        public void AddObject(GameObject obj)
+        {
+            AddObject((T)obj);
         }
 
         public void AddObjects(GameObject[] objs)
@@ -31,16 +49,19 @@ namespace Airplane
             if (objs == null)
                 throw new Exception("Null array.");
             foreach (GameObject obj in objs)
-                list_.Add(obj);
+                AddObject((T)obj);
         }
 
         public void RemoveObject(GameObject obj)
         {
-            list_.Remove(obj);
+            RemoveObject((T)obj);
         }
+
         public long Count()
         {
             return list_.Count();
         }
+        #endregion
+
     }
 }

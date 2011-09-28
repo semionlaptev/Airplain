@@ -72,7 +72,7 @@ namespace Airplane
         {
             if (objectslist_.ContainsKey(obj))
             {
-                return objectslist_[obj];
+                return (IGameList)objectslist_[obj];
             }
             else
             {

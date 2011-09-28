@@ -8,15 +8,43 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Airplane
 {
-    class TextureManager
+    class TextureManager//:IGameList (?)
     {
-        Dictionary<string, Texture2D> objectsdict_ = new Dictionary<string, Texture2D>();
+        #region Fields
+        private Dictionary<string, Texture2D> objectsdict_ = new Dictionary<string, Texture2D>();
+        #endregion
 
+        #region Methods
 
         public Texture2D this[string name]
         {
-            get { return objectsdict_[name]; }
-            set { objectsdict_[name] = value; }
+            get
+            {
+                return GetTexture(name);
+            }
+            set
+            {
+                AddTexture(name, value);
+            }
+        }
+
+        public void AddTexture(string name, Texture2D texture)
+        {
+            if (texture != null)
+                objectsdict_[name] = texture;
+            else
+                throw new Exception("No texture loaded.");
+        }
+        public Texture2D GetTexture(string name)
+        {
+            if (objectsdict_.ContainsKey(name))
+            {
+                return objectsdict_[name];
+            }
+            else
+            {
+                throw new Exception("Wrong texture name.");
+            }
         }
 
         public IEnumerator GetEnumerator()
@@ -29,6 +57,9 @@ namespace Airplane
             return objectsdict_.Count();
         }
 
+        #endregion
+
+        #region Singleton
         private static TextureManager instance;
         private TextureManager() { }
         public static TextureManager Instance
@@ -42,5 +73,6 @@ namespace Airplane
                  return instance;
             }
         }
+        #endregion
     }
 }
