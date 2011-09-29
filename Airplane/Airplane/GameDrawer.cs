@@ -10,11 +10,17 @@ namespace Airplane
 {
     class GameDrawer
     {
+        #region Fields
+        private GameCamera activeCamera_ = new GameCamera(new Vector2(0,0));
+        #endregion
+
 
         #region Methods
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend);
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.DepthRead, RasterizerState.CullNone, null, activeCamera_.Transform);
+            //SpriteSortMode.FrontToBack, BlendState.AlphaBlend,);
+            //SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.SaveState, Camera.Transform
             DrawScene(spriteBatch);
             spriteBatch.End();
         }
@@ -24,10 +30,15 @@ namespace Airplane
         /// </summary>
         void DrawScene(SpriteBatch spriteBatch)
         {
-            foreach (KeyValuePair<string, GameLayer> layer in LayersManager.Instance)
+            foreach (KeyValuePair<string, GameLayer> layer in LayersManager.Layers)
             {
                 DrawLayer(layer.Value, spriteBatch);
             }
+        }
+
+        public void SetActiveCamera(GameCamera camera)
+        {
+            activeCamera_ = camera;
         }
 
         protected void DrawLayer(GameLayer layer, SpriteBatch spriteBatch)
@@ -76,4 +87,5 @@ namespace Airplane
         #endregion
 
     }
+
 }

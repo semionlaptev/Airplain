@@ -20,7 +20,6 @@ namespace Airplane
     /// An object that can interact with other "dense" objects. 
     /// </summary>
     /// <param name="CollisionRect">Rectangle that sets "sensitive" region. It is relative to the object position.</param>
-    /// <param name="CollisionEvent">A delegate method that will be called if the collision happens</param>
     public class DenseObject : PositionedObject
     {
         #region Fields
@@ -64,10 +63,10 @@ namespace Airplane
             CollisionRect = new Rectangle(0, 0, rect.Width, rect.Height);         
         }
 
-        public DenseObject(Vector2 position, Texture2D image):
+        public DenseObject(Vector2 position, Vector2 size):
             base(position)
         {
-            CollisionRect = new Rectangle(0, 0, image.Width, image.Height);   
+            CollisionRect = new Rectangle(0, 0, (int)size.X, (int)size.Y);   
         }
 
         #endregion

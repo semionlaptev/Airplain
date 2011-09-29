@@ -46,6 +46,14 @@ namespace Airplane
             return objectsdict_.GetEnumerator();
         }
 
+        public void Move()
+        {
+            foreach (KeyValuePair<string, GameLayer> layer in objectsdict_)
+            {
+                layer.Value.Move();
+            }
+        }
+
         public long Count()
         {
             return objectsdict_.Count();
@@ -56,7 +64,7 @@ namespace Airplane
         #region Singleton
         private static LayersManager instance;
         private LayersManager() { }
-        public static LayersManager Instance
+        public static LayersManager Layers
         {
              get 
             {

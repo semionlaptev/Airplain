@@ -17,7 +17,7 @@ namespace Airplane
     public class TriggerArea : DenseObject, IGameList, ICollider
     {
         #region Fields
-        private Collider triggerCollider_ = new Collider();
+        private Collider triggerCollider_;
         private Dictionary<DenseObject, bool> isInArea_ = new Dictionary<DenseObject, bool>();
         #endregion
 
@@ -27,9 +27,10 @@ namespace Airplane
 
         #region Initalization
 
-        public TriggerArea(Rectangle rect)
+        public TriggerArea(Rectangle rect, CollisionEventDelegate colliderevent)
             : base(rect)
         {
+            triggerCollider_ = new Collider(colliderevent);
             Initialize();
         }
 
@@ -52,10 +53,23 @@ namespace Airplane
             triggerCollider_.RightCollider.RemoveObject(obj);
         }
 
+        #endregion
+
+        #region ICollider implementation
         public void CheckCollisions()
         {
             triggerCollider_.CheckCollisions();
         }
+
+        /*void AddToLeftCollider(DenseObject obj) //private
+        {
+            throw new NotSupportedException();
+        }
+
+        public void AddToRightCollider(DenseObject obj)
+        {
+            AddDenseObject(obj);
+        }*/
         #endregion
 
         #region IGameList Implementation

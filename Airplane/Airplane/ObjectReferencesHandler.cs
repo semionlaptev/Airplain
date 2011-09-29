@@ -6,6 +6,7 @@ using System.Text;
 namespace Airplane
 {
     public delegate void ObjectHandlerDictionaryDelegate<T,K>(T key, K val);
+    public delegate void ObjectHandlerListDelegate<T>(T val);
     class ObjectReferencesHandler //: IGameDictionary
     {
         #region Fields
@@ -31,17 +32,32 @@ namespace Airplane
             objectslists_[obj].Add(list);  //save the link
         }
 
+        public void AddObjectToList<T>(T obj, IGameList list, ObjectHandlerListDelegate<T> method) where T:GameObject
+        {
+            method(obj); //add to collider/layer/etc...
+            if (objectslists_.ContainsKey(obj) == false)
+                objectslists_[obj] = new List<IGameList>();
+            objectslists_[obj].Add(list);  //save the link
+        }
+
         /// <summary>
         /// Removes object from all IGameLists
         /// </summary>
         /// <param name="obj">GameObject to be removed</param>
-        public void RemoveObjectFromList(GameObject obj)
+        public void RemoveObjectFromLists(GameObject obj)
         {
-            foreach (IGameList list in objectslists_[obj])
+            if (objectslists_.ContainsKey(obj) == false)
             {
-                list.RemoveObject(obj);       
+                //throw new Exception("No GameObject has been found in Dictionaries list.");
             }
-            objectslists_.Remove(obj);
+            else
+            {
+                foreach (IGameList list in objectslists_[obj])
+                {
+                    list.RemoveObject(obj);
+                }
+                objectslists_.Remove(obj);
+            }
         }
 
         /// <summary>
@@ -79,20 +95,27 @@ namespace Airplane
         /// Removes GameObject from all dictionaries it has been added in.
         /// </summary>
         /// <param name="obj">GameObject</param>
-        public void RemoveObjectFromDictonary(GameObject obj)
+        public void RemoveObjectFromDictonaries(GameObject obj)
         {
-            foreach (IGameDictionary dict in objectsdicts_[obj])
+            if (objectsdicts_.ContainsKey(obj) == false)
             {
-                dict.RemoveByKey(obj);
+                //throw new Exception("No GameObject has been found in Dictionaries list.");
             }
-            objectsdicts_.Remove(obj);
+            else
+            {
+                foreach (IGameDictionary dict in objectsdicts_[obj])
+                {
+                    dict.RemoveByKey(obj);
+                }
+                objectsdicts_.Remove(obj);
+            }
         }
 
         #endregion
 
         #region Singleton
         private ObjectReferencesHandler() { }
-        public static ObjectReferencesHandler instance
+        public static ObjectReferencesHandler Instance
         {
             get
             {

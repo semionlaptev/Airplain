@@ -54,7 +54,9 @@ namespace Airplane
 
         public AnimationSequence(List<Vector2> seq)
         {
-            framesSequence_ = seq;
+            framesSequence_ = new List<Vector2>();
+            foreach(Vector2 frame in seq)
+                framesSequence_.Add(new Vector2(frame.Y,frame.X));
         }
 
         #endregion

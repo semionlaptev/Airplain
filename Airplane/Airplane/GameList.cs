@@ -24,7 +24,7 @@ namespace Airplane
             get { return list_[i]; }
         }
 
-        public void AddObject(T obj)
+        void AddObject(T obj)   //private?
         {
             if (obj == null)
                 throw new Exception("Null object.");

@@ -62,7 +62,7 @@ namespace Airplane
         #region Singleton
         private static TextureManager instance;
         private TextureManager() { }
-        public static TextureManager Instance
+        public static TextureManager Textures
         {
              get 
             {

@@ -20,15 +20,21 @@ namespace Airplane
 
         public void RemoveCollider(ICollider collider)
         {
-            objectslist_.Remove(collider);
+            if(objectslist_.Contains(collider))
+                objectslist_.Remove(collider);
         }
 
         public void CheckCollisions()
         {
-            foreach (ICollider collider in objectslist_)
+            /*foreach (ICollider collider in objectslist_)  //generates an error.
             {
                 collider.CheckCollisions();
+            }*/
+            for (int i = 0; i < objectslist_.Count();i++ )
+            {
+                objectslist_[i].CheckCollisions();
             }
+             
         }
         #endregion
 

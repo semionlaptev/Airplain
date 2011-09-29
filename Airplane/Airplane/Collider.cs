@@ -34,7 +34,25 @@ namespace Airplane
 
         #endregion
 
+        #region Init
+
+        public Collider(CollisionEventDelegate collisionevent)
+        {
+            collisionEvent_ = collisionevent;
+        }
+
+        #endregion
+
         #region Methods
+
+        public void AddToLeftCollider(DenseObject obj)
+        {
+            leftList_.AddObject(obj);
+        }
+        public void AddToRightCollider(DenseObject obj)
+        {
+            rightList_.AddObject(obj);
+        }
 
         /// <summary>
         /// Checks collisions between object in the lists
